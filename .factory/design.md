@@ -49,13 +49,15 @@ compact tool group. All targets are at least 44 px.
 
 ## Game grammar and difficulty
 
-Each date selects a deterministic rotation and reflection of one proven board.
-The same date therefore gives every player the same layout and tray turns.
+Each date selects a deterministic rotation, reflection, and dependency order
+from all 120 possible creature orders. The same date therefore gives every
+player the same layout, tray turns, and one perfect answer, while consecutive
+UTC dates never repeat that answer.
 There are five distinct creature silhouettes. Each silhouette has one habitat.
 Players select a creature, rotate it, and place it into the matching habitat.
 
-A visible dotted link shows which neighbor each creature mutates. The first
-creature changes a seed tile. Each later creature changes the prior creature,
+A visible dotted link shows which neighboring creature each creature changes.
+The gold-marked first creature starts the chain. Each later creature changes the prior creature,
 so five successful mutations require one unique placement order. A placed piece
 cannot score retroactively. Players may undo or reset and can inspect every
 mutation in the score trail. The three result tiers are Quiet (0–2), Shifting

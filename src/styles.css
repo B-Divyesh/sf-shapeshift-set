@@ -422,10 +422,11 @@ h3 { letter-spacing: -.018em; }
   .wordmark span:last-child { font-size: .88rem; }
   .opening { gap: 12px; margin-top: 12px; }
   .opening-copy { padding: 16px; }
-  .opening-copy .section-label, .opening-copy .hero-action span, .opening-copy .action-note { display: none; }
+  .opening-copy .section-label { display: none; }
   h1 { max-width: 14ch; margin-bottom: 8px; font-size: clamp(1.55rem, 7.5vw, 2rem); }
   .hero-summary { margin-bottom: 8px; font-size: .92rem; line-height: 1.4; }
-  .hero-action { align-items: flex-start; }
+  .hero-action { align-items: flex-start; gap: 8px 12px; }
+  .hero-action span, .action-note { flex-basis: 100%; max-width: none; }
   .plain-facts { gap: 4px; margin-top: 12px; padding-top: 12px; font-size: .86rem; }
   .landscape { min-height: 190px; margin-top: 24px; }
   .art-caption { right: 12px; bottom: 12px; }
@@ -449,7 +450,7 @@ h3 { letter-spacing: -.018em; }
   .piece-shape { width: 34px; height: 34px; }
   .tray-piece > span:not(.piece-number) { font-size: .68rem; }
   .tray-piece small { font-size: .58rem; }
-  .turn-tools button span { display: none; }
+  .turn-tools button span { font-size: .68rem; }
   .score-trail { grid-template-columns: 1fr; }
   .score-trail li { grid-template-columns: 80px 1fr auto; align-items: center; min-height: 48px; }
   .score-trail b { align-self: center; }

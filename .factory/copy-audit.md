@@ -1,8 +1,8 @@
 # Landing copy audit
 
-Re-audited September 2, 2026 after the board-first repair. Counts treat hyphenated terms and numbers as one
-word. Headings, labels, and button text are listed separately because they are
-not sentences.
+Re-audited September 2, 2026 for polish round 1. Word counts treat numbers and
+hyphenated forms as one word. No listed sentence exceeds 22 words or contains a
+banned marketing word.
 
 ## First screen
 
@@ -10,78 +10,48 @@ not sentences.
 | --- | ---: | --- |
 | Place five creatures in the right order | 7 | None |
 | For daily puzzle players who want one shared spatial challenge that ends after five creatures. | 15 | None |
-| Try it with sample data | 5 | None |
-| It opens a complete sample board. | 6 | None |
+| Opens a complete sample board. | 5 | None; visible at 390 px |
 | Free to play. | 3 | None |
 | Progress stays in this browser. | 5 | None |
-| A new shared board appears each UTC day. | 8 | None |
+| A new shared board appears each UTC day. | 8 | Covered by `utc-daily` |
 
-The headline is seven words. The audience and outcome sentence is fifteen
-words. The first action names its result, and the adjacent sentence explains
-what opens. At 390 px the opening copy is compact so the playable board enters
-the initial viewport.
-
-## Game and supporting sections
+## Game and supporting screens
 
 | Copy | Words | Flag |
 | --- | ---: | --- |
-| Place an arrow’s target first. | 5 | None |
-| Then the creature changes that neighbor and scores one. | 9 | None |
-| Match its blocks to one dotted habitat. | 7 | None |
-| The gold point starts the chain. | 6 | None |
-| Each arrow points to a neighbor that must be placed first. | 11 | None |
-| Choose a creature, turn it, then select its habitat. | 9 | None |
-| Placed mutations will appear here. | 5 | None |
-| An arrow scores only when its target creature is already on the board. | 13 | None |
-| Rotate or flip its blocks until they match one dotted habitat. | 11 | None |
-| Finish the board, inspect each mutation, and compare your score tier. | 11 | None |
-| There are no accounts, ads, boosters, or public leaderboards. | 9 | None |
-| Your daily progress uses local browser storage. | 7 | None |
-| Demo actions use memory only. | 5 | None |
-| The game loads from this site and can reopen offline after the first visit. | 14 | None |
-| A session is one five-placement board. | 6 | None |
-| Undo last piece returns the latest creature to the tray and removes its score. | 14 | None |
-| Copy result puts the score, tier, and seed on your clipboard. | 11 | None |
-| One shared creature puzzle each day. | 6 | None |
+| Place an arrow’s target creature first. | 6 | Covered by `mutation-scoring` |
+| Then the creature changes that neighbor and scores one. | 9 | Covered by `mutation-scoring` |
+| The gold point marks the creature that starts the chain. | 10 | None |
+| Each arrow points to a creature that must be placed first. | 12 | Covered by `mutation-scoring` |
+| Changed neighbors will appear here. | 5 | None |
+| Finish the board, inspect each changed neighbor, and compare your result. | 12 | Covered by `score-tiers` |
+| There are no accounts, ads, boosters, or public leaderboards. | 9 | Covered by `free-no-upsells`, `no-leaderboard` |
+| Your daily progress stays in this browser. | 7 | Covered by `local-progress` |
+| Demo actions use memory only. | 5 | Covered by `demo-isolation` |
+| The game loads from this site and can reopen offline after the first visit. | 14 | Covered by `same-origin`, `offline-reload` |
+| Demo play uses memory only and never reads or changes real progress. | 12 | Covered by `demo-isolation` |
+| The game sends no analytics events and loads no code or files from other sites. | 14 | Covered by `no-analytics`, `same-origin` |
 
-## Dynamic states
+## Result and recovery text
 
 | Copy | Words | Flag |
 | --- | ---: | --- |
-| Saved progress could not be read. | 6 | None |
-| A fresh board is ready. | 5 | None |
-| Progress could not be saved. | 5 | None |
-| This run will not survive reload. | 7 | None |
-| Keep this tab open to finish the board. | 8 | None |
-| No creature is selected. | 5 | None |
-| Choose one from the tray first. | 6 | None |
-| That habitat is filled. | 4 | None |
-| Choose an empty dotted habitat. | 5 | None |
-| That creature has a different shape. | 6 | None |
-| Choose its matching habitat. | 4 | None |
-| The blocks do not match yet. | 6 | None |
-| Rotate or flip the creature, then try again. | 8 | None |
-| Every mutation landed. | 3 | None |
-| You found the only perfect order. | 6 | None |
-| Most mutations landed. | 3 | None |
-| Trace each arrow back before another run. | 7 | None |
-| Some neighbors were still empty. | 5 | None |
-| Place each arrow target first. | 5 | None |
-| Your current moves and score will be cleared. | 8 | None |
-| The result could not be copied. | 6 | None |
-| Allow clipboard access and try again. | 6 | None |
-
-No sentence exceeds 22 words. None contains a banned word from the plain-words
-contract.
+| Try again (0–2) | 2 | Covered by `score-tiers` |
+| Close (3–4) | 1 | Covered by `score-tiers` |
+| Perfect (5) | 1 | Covered by `score-tiers` |
+| All five neighbors changed. You found the only perfect order. | 9 | None |
+| Three or four neighbors changed. Trace each arrow back before another run. | 11 | None |
+| Some target creatures were not placed. Place each arrow target first. | 11 | None |
+| Progress could not be saved. This run will not survive reload. Keep this tab open to finish the board. | 19 | Covered by `persistence-recovery` |
 
 ## Terminology
 
 | Concept | One word used |
 | --- | --- |
-| A polyomino game object | creature |
-| Its destination outline | habitat |
-| A successful neighbor change | mutation |
-| The ordered results list | mutation score |
-| The fixed daily identifier | seed |
-| The isolated try-out | demo |
-| Reversing one placement | undo |
+| Polyomino game object | creature |
+| Destination outline | habitat |
+| Scored effect | changed neighbor |
+| Ordered result list | changed neighbors |
+| Daily identifier | Board ID |
+| Isolated try-out | demo |
+| Reverse one placement | undo |

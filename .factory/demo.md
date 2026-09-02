@@ -11,8 +11,8 @@ file upload, or setup.
 ## Sample data
 
 The sample is the shared board for August 14, 2026. It contains five named
-creatures, five transformed habitats, a visible mutation chain, deterministic
-starting orientations, and seed `989809312`.
+creatures, five transformed habitats, a visible changed-neighbor chain,
+deterministic starting orientations, and Board ID `989809312`.
 
 ## Isolation
 

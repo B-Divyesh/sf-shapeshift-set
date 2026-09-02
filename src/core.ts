@@ -55,6 +55,29 @@ const BASE_HABITATS: Record<PieceId, Coord[]> = {
 
 export const SAMPLE_DATE = '2026-08-14';
 
+const DAY_MS = 86_400_000;
+
+/**
+ * Select a different dependency chain for each UTC day.  The board still has
+ * the same five authored pieces, but their arrows are reassigned in a daily,
+ * deterministic order.  Moving through all 120 permutations before cycling
+ * guarantees adjacent UTC dates cannot teach the same answer.
+ */
+export function dailyOrder(date: string): PieceId[] {
+  const day = Math.floor(Date.parse(`${date}T00:00:00Z`) / DAY_MS);
+  let rank = ((day * 37) % 120 + 120) % 120;
+  const available = PIECES.map((piece) => piece.id);
+  const order: PieceId[] = [];
+  for (let size = available.length; size > 0; size -= 1) {
+    let factorial = 1;
+    for (let value = 2; value < size; value += 1) factorial *= value;
+    const index = Math.floor(rank / factorial);
+    rank %= factorial;
+    order.push(available.splice(index, 1)[0]);
+  }
+  return order;
+}
+
 export function hashDate(date: string): number {
   let value = 2166136261;
   for (const char of date) {
@@ -103,10 +126,12 @@ export function createGame(date: string): GameState {
   const seed = hashDate(date);
   const boardRotation = seed % 4;
   const boardFlipped = ((seed >>> 3) & 1) === 1;
+  const order = dailyOrder(date);
   const pieces = PIECES.map((piece, index): DailyPiece => {
     const habitat = transformBoard(BASE_HABITATS[piece.id], boardRotation, boardFlipped);
     return {
       ...piece,
+      mutates: order.indexOf(piece.id) === 0 ? null : order[order.indexOf(piece.id) - 1],
       cells: [...piece.cells],
       habitat,
       targetSignature: signature(habitat),

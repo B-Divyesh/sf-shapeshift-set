@@ -2,7 +2,9 @@ import { expect, test, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import {
   PIECES,
+  SAMPLE_DATE,
   createGame,
+  dailyOrder,
   flipPiece,
   isOriented,
   placeSelected,
@@ -11,14 +13,14 @@ import {
   type PieceId,
 } from '../src/core';
 
-const perfectOrder: PieceId[] = ['mote', 'nook', 'wing', 'crown', 'crook'];
+const perfectOrder: PieceId[] = dailyOrder(SAMPLE_DATE);
 
 async function orientPiece(page: Page, id: PieceId): Promise<void> {
   await page.locator(`[data-select-piece="${id}"]`).click();
   for (let flip = 0; flip < 2; flip += 1) {
     for (let turn = 0; turn < 4; turn += 1) {
       const label = await page.locator(`[data-select-piece="${id}"] small`).textContent();
-      if (label === 'Fits') return;
+      if (label === 'Ready') return;
       await page.locator('[data-rotate="1"]').click();
     }
     await page.locator('[data-flip]').click();
@@ -29,11 +31,15 @@ async function orientPiece(page: Page, id: PieceId): Promise<void> {
 async function placePiece(page: Page, id: PieceId): Promise<void> {
   await orientPiece(page, id);
   const name = PIECES.find((piece) => piece.id === id)!.name;
-  await page.getByRole('button', { name: new RegExp(`${name} habitat, empty`) }).first().click();
+  await page.getByRole('button', { name: new RegExp(`Place selected creature in ${name} habitat`) }).first().click();
 }
 
 async function solvePerfect(page: Page): Promise<void> {
   for (const id of perfectOrder) await placePiece(page, id);
+}
+
+async function solveOrder(page: Page, order: PieceId[]): Promise<void> {
+  for (const id of order) await placePiece(page, id);
 }
 
 function readyPiece(state: GameState, id: PieceId): GameState {
@@ -55,16 +61,33 @@ function permutations<T>(values: T[]): T[][] {
     permutations([...values.slice(0, index), ...values.slice(index + 1)]).map((rest) => [value, ...rest]));
 }
 
+function orderForScore(date: string, wantedScore: number): PieceId[] {
+  for (const order of permutations(PIECES.map((piece) => piece.id))) {
+    let state = createGame(date);
+    for (const id of order) state = placeSelected(readyPiece(state, id), id).state;
+    if (state.score === wantedScore) return order;
+  }
+  throw new Error(`No order scores ${wantedScore}`);
+}
+
 test('@claim:daily-end a full run reaches the scored end screen', async ({ page }) => {
   await page.goto('/demo');
   await solvePerfect(page);
   await expect(page.getByRole('heading', { name: 'You changed 5 of 5' })).toBeVisible();
-  await expect(page.getByText('Every mutation landed. You found the only perfect order.')).toBeVisible();
+  await expect(page.getByText('All five neighbors changed. You found the only perfect order.')).toBeVisible();
   await expect(page.locator('.score-trail li.success')).toHaveCount(5);
 });
 
-test('@claim:unique-perfect every generated board has one perfect order', async () => {
-  for (const date of ['2026-08-14', '2026-09-02', '2027-01-01', '2030-12-31']) {
+test('the ?demo=1 entry point opens the same isolated sample board', async ({ page }) => {
+  await page.goto('/?demo=1');
+  await expect(page.getByRole('heading', { name: 'Place five sample creatures in order' })).toBeVisible();
+  await expect(page.getByRole('complementary', { name: 'Demo mode' })).toBeVisible();
+  expect(await page.evaluate(() => Object.keys(localStorage))).toEqual([]);
+});
+
+test('@claim:unique-perfect every generated board has one perfect order and daily answers change', async () => {
+  const dates = Array.from({ length: 48 }, (_, index) => new Date(Date.UTC(2026, 7, 1 + index)).toISOString().slice(0, 10));
+  for (const [index, date] of dates.entries()) {
     let perfect = 0;
     for (const order of permutations(PIECES.map((piece) => piece.id))) {
       let state = createGame(date);
@@ -75,6 +98,29 @@ test('@claim:unique-perfect every generated board has one perfect order', async 
       if (state.score === 5) perfect += 1;
     }
     expect(perfect).toBe(1);
+    if (index > 0) expect(dailyOrder(date)).not.toEqual(dailyOrder(dates[index - 1]));
+  }
+});
+
+test('@claim:mutation-scoring an arrow scores only after its target creature is placed', async ({ page }) => {
+  const target = perfectOrder[0];
+  const dependent = perfectOrder[1];
+  await page.goto('/demo');
+  await placePiece(page, dependent);
+  await expect(page.locator('.score-box strong')).toContainText('0/5');
+  await expect(page.locator('.score-trail li')).toContainText(`${PIECES.find((piece) => piece.id === target)!.name} was not placed`);
+  await placePiece(page, target);
+  await expect(page.locator('.score-box strong')).toContainText('1/5');
+  await expect(page.locator('.score-trail li').last()).toContainText(`Changed the starting creature`);
+});
+
+test('@claim:score-tiers every result tier shows five itemized changed-neighbor results', async ({ page }) => {
+  for (const [score, label] of [[1, 'Try again (0–2)'], [3, 'Close (3–4)'], [5, 'Perfect (5)']] as const) {
+    await page.goto('/demo');
+    await solveOrder(page, orderForScore(SAMPLE_DATE, score));
+    await expect(page.getByText(label, { exact: true })).toBeVisible();
+    await expect(page.locator('.score-trail li')).toHaveCount(5);
+    await expect(page.locator('.score-trail li.success')).toHaveCount(score);
   }
 });
 
@@ -92,19 +138,35 @@ test('@claim:local-progress real progress survives a reload', async ({ page }) =
   await page.evaluate(() => localStorage.clear());
   await page.reload();
   await placePiece(page, 'mote');
-  await expect(page.locator('.score-box strong')).toContainText('1/5');
+  await expect(page.locator('.score-trail li')).toHaveCount(1);
   await page.reload();
-  await expect(page.locator('.score-box strong')).toContainText('1/5');
+  await expect(page.locator('.score-trail li')).toHaveCount(1);
   await expect(page.locator('[data-select-piece="mote"]')).toBeDisabled();
 });
 
-test('@claim:demo-isolation demo play writes no local progress', async ({ page }) => {
+test('@claim:demo-isolation demo uses memory only and never reads or changes real progress', async ({ page }) => {
+  await page.goto('/');
+  const before = await page.evaluate(() => {
+    localStorage.clear();
+    localStorage.setItem('shapeshift-set:daily:sentinel', JSON.stringify({ moves: ['real'] }));
+    localStorage.setItem('real-progress-sentinel', 'keep me');
+    document.cookie = 'real-progress-cookie=keep; path=/';
+    return { storage: JSON.stringify(Object.entries(localStorage).sort()), cookie: document.cookie };
+  });
   await page.goto('/demo');
-  await page.evaluate(() => localStorage.clear());
-  await placePiece(page, 'mote');
-  expect(await page.evaluate(() => Object.keys(localStorage))).toEqual([]);
+  await placePiece(page, perfectOrder[0]);
+  await page.getByRole('button', { name: 'Reset demo' }).first().click();
+  const during = await page.evaluate(async () => ({
+    storage: JSON.stringify(Object.entries(localStorage).sort()),
+    cookie: document.cookie,
+    databases: 'databases' in indexedDB ? await indexedDB.databases() : [],
+  }));
+  expect(during.storage).toBe(before.storage);
+  expect(during.cookie).toBe(before.cookie);
+  expect(during.databases).toEqual([]);
   await page.getByRole('link', { name: 'Start for real' }).click();
   await expect(page.locator('.score-box strong')).toContainText('0/5');
+  expect(await page.evaluate(() => JSON.stringify(Object.entries(localStorage).sort()))).toBe(before.storage);
 });
 
 test('@claim:offline-reload the demo reopens offline after its first visit', async ({ browser }) => {
@@ -169,14 +231,14 @@ test('@claim:keyboard-controls keyboard controls select, rotate, flip, move, and
   await page.keyboard.press('1');
   await expect(page.locator('[data-select-piece="mote"]')).toHaveAttribute('aria-pressed', 'true');
   await page.keyboard.press('q');
-  await expect(page.locator('[data-select-piece="mote"] small')).toHaveText('Turn it');
+  await expect(page.locator('[data-select-piece="mote"] small')).toHaveText('Needs turning');
   await page.keyboard.press('e');
-  await expect(page.locator('[data-select-piece="mote"] small')).toHaveText('Fits');
+  await expect(page.locator('[data-select-piece="mote"] small')).toHaveText('Ready');
   await page.keyboard.press('f');
-  await expect(page.locator('[data-select-piece="mote"] small')).toHaveText('Turn it');
+  await expect(page.locator('[data-select-piece="mote"] small')).toHaveText('Needs turning');
   await page.keyboard.press('f');
-  await expect(page.locator('[data-select-piece="mote"] small')).toHaveText('Fits');
-  await page.getByRole('button', { name: /Mote habitat, empty/ }).first().focus();
+  await expect(page.locator('[data-select-piece="mote"] small')).toHaveText('Ready');
+  await page.getByRole('button', { name: /Place selected creature in Mote habitat/ }).first().focus();
   await page.keyboard.press('ArrowRight');
   await expect(page.locator('.board-cell.cursor')).toHaveAttribute('data-x', '1');
   await page.keyboard.press('ArrowLeft');
@@ -188,9 +250,9 @@ test('@claim:all-inputs pointer and touch controls select, turn, and place creat
   await page.goto('/demo');
   await page.locator('[data-select-piece="mote"]').click();
   await page.locator('[data-rotate="1"]').click();
-  await expect(page.locator('[data-select-piece="mote"] small')).toHaveText('Turn it');
+  await expect(page.locator('[data-select-piece="mote"] small')).toHaveText('Needs turning');
   await page.locator('[data-rotate="-1"]').click();
-  await page.getByRole('button', { name: /Mote habitat, empty/ }).first().click();
+  await page.getByRole('button', { name: /Place selected creature in Mote habitat/ }).first().click();
   await expect(page.locator('.score-box strong')).toContainText('1/5');
 
   const touchContext = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
@@ -199,9 +261,9 @@ test('@claim:all-inputs pointer and touch controls select, turn, and place creat
     await touchPage.goto('http://127.0.0.1:4173/demo');
     await touchPage.locator('[data-select-piece="mote"]').tap();
     await touchPage.locator('[data-rotate="1"]').tap();
-    await expect(touchPage.locator('[data-select-piece="mote"] small')).toHaveText('Turn it');
+    await expect(touchPage.locator('[data-select-piece="mote"] small')).toHaveText('Needs turning');
     await touchPage.locator('[data-rotate="-1"]').tap();
-    await touchPage.getByRole('button', { name: /Mote habitat, empty/ }).first().tap();
+    await touchPage.getByRole('button', { name: /Place selected creature in Mote habitat/ }).first().tap();
     await expect(touchPage.locator('.score-box strong')).toContainText('1/5');
   } finally {
     await touchContext.close();
@@ -215,24 +277,24 @@ test('@claim:undo-last-piece undo returns the latest creature to the tray and re
   await expect(page.locator('.score-box strong')).toContainText('0/5');
   await expect(page.locator('[data-select-piece="mote"]')).toBeEnabled();
   await expect(page.locator('.score-trail li')).toHaveCount(0);
-  await expect(page.locator('.status-row')).toContainText('The last piece returned to the tray. Its mutation was removed.');
+  await expect(page.locator('.status-row')).toContainText('The last piece returned to the tray. Its changed-neighbor score was removed.');
 });
 
-test('@claim:copy-result copy result puts the completed score, tier, and seed on the clipboard', async ({ page }) => {
+test('@claim:copy-result copy result puts the completed score, result, and Board ID on the clipboard', async ({ page }) => {
   await page.context().grantPermissions(['clipboard-read', 'clipboard-write'], { origin: 'http://127.0.0.1:4173' });
   await page.goto('/demo');
   await solvePerfect(page);
   await page.getByRole('button', { name: 'Copy result' }).click();
-  await expect(page.locator('.status-row')).toContainText('Result copied. It contains the score, tier, and seed.');
+  await expect(page.locator('.status-row')).toContainText('Result copied. It contains the score, result, and Board ID.');
   await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toContain('5/5 · Radiant');
-  await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toContain('Seed 989809312');
+  await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toContain('Board ID 989809312');
 });
 
 test('@claim:session-length a round reaches its result only after its fifth placement', async ({ page }) => {
   await page.goto('/demo');
   for (const id of perfectOrder.slice(0, 4)) await placePiece(page, id);
   await expect(page.getByRole('heading', { name: /You changed/ })).toHaveCount(0);
-  await placePiece(page, 'crook');
+  await placePiece(page, perfectOrder[4]);
   await expect(page.getByRole('heading', { name: 'You changed 5 of 5' })).toBeVisible();
   await expect(page.locator('.score-trail li')).toHaveCount(5);
 });
@@ -247,7 +309,7 @@ test('@claim:persistence-recovery rejected progress writes are visible and do no
     });
   });
   await placePiece(page, 'mote');
-  await expect(page.locator('.score-box strong')).toContainText('1/5');
+  await expect(page.locator('.score-trail li')).toHaveCount(1);
   await expect(page.locator('.status-row')).toContainText('Progress could not be saved. This run will not survive reload. Keep this tab open to finish the board.');
   await page.reload();
   await expect(page.locator('.score-box strong')).toContainText('0/5');
@@ -260,6 +322,22 @@ test('@claim:same-origin the demo loads no third-party runtime resources', async
   await page.goto('/demo');
   await placePiece(page, 'mote');
   expect([...origins]).toEqual(['http://127.0.0.1:4173']);
+});
+
+test('@claim:no-analytics the complete demo flow sends no analytics request or event payload', async ({ page }) => {
+  const requests: Array<{ url: string; body: string | null }> = [];
+  page.on('request', (request) => requests.push({ url: request.url(), body: request.postData() }));
+  await page.goto('/demo');
+  await solvePerfect(page);
+  await page.getByRole('button', { name: 'Play this board again' }).click();
+  expect(requests.filter(({ url, body }) => /analytics|collect|telemetry|track|\/event/i.test(url) || /analytics|telemetry|eventName/i.test(body ?? ''))).toEqual([]);
+});
+
+test('@claim:no-leaderboard the complete game shows no leaderboard controls or results', async ({ page }) => {
+  await page.goto('/demo');
+  await solvePerfect(page);
+  await expect(page.locator('a, button').filter({ hasText: /leaderboard|rankings|global score/i })).toHaveCount(0);
+  await expect(page.locator('.result-panel')).not.toContainText(/rank|global|player/i);
 });
 
 test('@claim:utc-daily a date gives one shared seed and the next UTC date gives another', async () => {
@@ -323,6 +401,11 @@ test('the first desktop and mobile screens keep all plain facts visible with the
         const box = await fact.boundingBox();
         expect(box?.y).toBeGreaterThanOrEqual(0);
         expect((box?.y ?? viewport.height) + (box?.height ?? 0)).toBeLessThanOrEqual(viewport.height);
+      }
+      if (path === '/') {
+        await expect(page.getByText('Opens a complete sample board.', { exact: true })).toBeVisible();
+        const note = await page.getByText('Opens a complete sample board.', { exact: true }).boundingBox();
+        expect((note?.y ?? viewport.height) + (note?.height ?? 0)).toBeLessThanOrEqual(viewport.height);
       }
       const board = await page.locator('.board').boundingBox();
       expect(board?.y).toBeLessThan(viewport.height);

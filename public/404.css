@@ -16,4 +16,5 @@ main > p:not(.label) { color: #c7d0df; }
 .return { display: inline-flex; align-items: center; min-height: 48px; padding: 0 18px; background: #ff7a6e; color: #241018; font-weight: 800; text-decoration: none; }
 footer { min-height: 92px; border-top: 1px solid rgba(255, 248, 232, .2); border-bottom: 0; color: #c7d0df; font-size: .88rem; }
 footer p { margin: 0; }
+footer .footer-note { flex-basis: 100%; font-size: .78rem; }
 @media (max-width: 640px) { header, footer { flex-wrap: wrap; padding-block: 8px; } nav { justify-content: start; } main { margin-block: 32px; } }

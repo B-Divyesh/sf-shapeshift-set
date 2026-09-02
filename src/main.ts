@@ -92,7 +92,9 @@ function shapeSvg(cells: Coord[], label: string): string {
 }
 
 function header(): string {
+  const routeName = demoMode ? 'Demo' : window.location.pathname === '/privacy' ? 'Privacy' : window.location.pathname === '/terms' ? 'Terms' : 'Puzzle';
   return `<a class="skip-link" href="#main">Skip to the puzzle</a>
+    <p class="sr-only" aria-live="polite" aria-atomic="true">${routeName} page loaded.</p>
     <header class="site-header">
       <a class="wordmark" href="/" data-link aria-label="Shapeshift Set home">
         <span class="wordmark-mark" aria-hidden="true"><i></i><i></i><i></i></span>
@@ -138,17 +140,17 @@ function mutationLines(): string {
     const y2 = to[1] - (dy / length) * inset;
     return `<line class="mutation-link link-${piece.id}${piece.mutation ? ' changed' : ''}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" marker-end="url(#arrow)" />`;
   }).join('');
-  const mote = centers.get('mote')!;
+  const first = state.pieces.find((piece) => piece.mutates === null)!;
   return `<svg class="board-links" viewBox="0 0 6 6" aria-hidden="true">
     <defs><marker id="arrow" markerWidth="4" markerHeight="4" refX="3" refY="2" orient="auto"><path d="M0,0 L4,2 L0,4 Z" /></marker></defs>
-    ${lines}<circle class="seed-mark" cx="${mote[0]}" cy="${mote[1]}" r="0.13" />
+    ${lines}<circle class="seed-mark" cx="${centers.get(first.id)![0]}" cy="${centers.get(first.id)![1]}" r="0.13" />
   </svg>`;
 }
 
 function boardCell(x: number, y: number): string {
   const habitat = cellHabitat(state, x, y);
   const label = habitat
-    ? `Row ${y + 1}, column ${x + 1}. ${habitat.name} habitat, ${habitat.placed ? 'filled' : 'empty'}.`
+    ? `Row ${y + 1}, column ${x + 1}. ${habitat.placed ? `${habitat.name} habitat, filled.` : `Place selected creature in ${habitat.name} habitat, row ${y + 1}, column ${x + 1}.`}`
     : `Row ${y + 1}, column ${x + 1}. Open ground.`;
   const classes = ['board-cell'];
   if (habitat) classes.push('habitat', `piece-${habitat.id}`);
@@ -166,22 +168,22 @@ function trayPiece(piece: DailyPiece, index: number): string {
   const oriented = orientCells(piece.cells, piece.rotation, piece.flipped);
   const selected = state.selected === piece.id;
   return `<button class="tray-piece piece-${piece.id}${selected ? ' selected' : ''}" data-select-piece="${piece.id}"
-      ${piece.placed ? 'disabled' : ''} aria-pressed="${selected}" aria-keyshortcuts="${index + 1}">
+      ${piece.placed ? 'disabled' : ''} aria-label="${piece.placed ? `${piece.name} is already placed` : `Select ${piece.name} — ${isOriented(piece) ? 'ready' : 'needs turning'}`}" aria-pressed="${selected}" aria-keyshortcuts="${index + 1}">
       <span class="piece-number" aria-hidden="true">${index + 1}</span>
       ${shapeSvg(oriented, piece.name)}
       <span>${piece.name}</span>
-      <small>${piece.placed ? (piece.mutation ? 'Changed' : 'Missed') : (isOriented(piece) ? 'Fits' : 'Turn it')}</small>
+      <small>${piece.placed ? (piece.mutation ? 'Changed' : 'No change') : (isOriented(piece) ? 'Ready' : 'Needs turning')}</small>
     </button>`;
 }
 
 function scoreTrail(): string {
   if (state.moves.length === 0) {
-    return '<p class="empty-trail">Placed mutations will appear here.</p>';
+    return '<p class="empty-trail">Changed neighbors will appear here.</p>';
   }
   return `<ol class="score-trail">${state.moves.map((move) => {
     const piece = pieceById(move.id);
-    const target = piece.mutates ? pieceById(piece.mutates).name : 'seed tile';
-    return `<li class="${move.mutation ? 'success' : 'miss'}"><strong>${piece.name}</strong><span>${move.mutation ? `Changed ${target}` : `${target} was empty`}</span><b aria-label="${move.mutation ? 'scored' : 'did not score'}">${move.mutation ? '+1' : '0'}</b></li>`;
+    const target = piece.mutates ? pieceById(piece.mutates).name : 'the starting creature';
+    return `<li class="${move.mutation ? 'success' : 'miss'}"><strong>${piece.name}</strong><span>${move.mutation ? `Changed ${target}` : `${target} was not placed`}</span><b aria-label="${move.mutation ? 'scored' : 'did not score'}">${move.mutation ? '+1' : '0'}</b></li>`;
   }).join('')}</ol>`;
 }
 
@@ -189,15 +191,15 @@ function resultPanel(): string {
   if (!state.finished) return '';
   const tier = scoreTier(state.score);
   const resultText = tier === 'Radiant'
-    ? 'Every mutation landed. You found the only perfect order.'
+    ? 'All five neighbors changed. You found the only perfect order.'
     : tier === 'Shifting'
-      ? 'Most mutations landed. Trace each arrow back before another run.'
-      : 'Some neighbors were still empty. Place each arrow target first.';
+      ? 'Three or four neighbors changed. Trace each arrow back before another run.'
+      : 'Some target creatures were not placed. Place each arrow target first.';
   return `<section class="result-panel tier-${tier.toLowerCase()}" aria-labelledby="result-title">
-    <p class="result-kicker">${tier} set</p>
+    <p class="result-kicker">${tier === 'Radiant' ? 'Perfect (5)' : tier === 'Shifting' ? 'Close (3–4)' : 'Try again (0–2)'}</p>
     <h3 id="result-title">You changed ${state.score} of 5</h3>
     <p>${resultText}</p>
-    <p class="result-detail">${state.undos} ${state.undos === 1 ? 'undo' : 'undos'} · Seed ${state.seed}</p>
+    <p class="result-detail">${state.undos} ${state.undos === 1 ? 'undo' : 'undos'} · Board ID ${state.seed}</p>
     <div class="result-actions">
       <button class="button primary" data-replay>Play this board again</button>
       <button class="button quiet" data-share>Copy result</button>
@@ -214,28 +216,28 @@ function game(): string {
         <p class="section-label">${demoMode ? 'Sample board' : 'Daily board'} · ${dateLabel(state.date)}</p>
         <h2 id="game-title">Match the habitats</h2>
       </div>
-      <div class="seed"><span>Seed</span><strong>${state.seed}</strong></div>
+      <div class="seed"><span>Board ID</span><strong>${state.seed}</strong></div>
     </div>
-    <p class="game-rule">Place an arrow’s target first. Then the creature changes that neighbor and scores one.</p>
+    <p class="game-rule">Place an arrow’s target creature first. Then the creature changes that neighbor and scores one.</p>
     <div class="game-layout">
       <div class="board-column">
         <div class="board-wrap">
           ${mutationLines()}
           <div class="board" role="group" aria-label="Six by six creature habitat board">${cells}</div>
         </div>
-        <p class="board-key"><span class="seed-dot" aria-hidden="true"></span>The gold point starts the chain. Each arrow points to a neighbor that must be placed first.</p>
+        <p class="board-key"><span class="seed-dot" aria-hidden="true"></span>The gold point marks the creature that starts the chain. Each arrow points to a creature that must be placed first.</p>
       </div>
       <div class="game-tools">
-        <div class="score-box" aria-label="Current score"><strong>${state.score}<span>/5</span></strong><p>mutations</p></div>
+        <div class="score-box" aria-label="Current score"><strong>${state.score}<span>/5</span></strong><p>changed neighbors</p></div>
         <div class="tool-copy">
           <h3>Choose a creature</h3>
           <p>Match its blocks to one dotted habitat.</p>
         </div>
         <div class="piece-tray">${state.pieces.map(trayPiece).join('')}</div>
         <div class="turn-tools" aria-label="Turn the selected creature">
-          <button data-rotate="-1" aria-label="Rotate selected creature left" aria-keyshortcuts="Q" ${selectedPiece ? '' : 'disabled'}>↶ <span>Left</span></button>
-          <button data-flip aria-label="Flip selected creature" aria-keyshortcuts="F" ${selectedPiece ? '' : 'disabled'}>↔ <span>Flip</span></button>
-          <button data-rotate="1" aria-label="Rotate selected creature right" aria-keyshortcuts="E" ${selectedPiece ? '' : 'disabled'}>↷ <span>Right</span></button>
+          <button data-rotate="-1" aria-label="Rotate selected creature left" aria-keyshortcuts="Q" ${selectedPiece ? '' : 'disabled'}>↶ <span>Rotate left</span></button>
+          <button data-flip aria-label="Flip selected creature" aria-keyshortcuts="F" ${selectedPiece ? '' : 'disabled'}>↔ <span>Flip creature</span></button>
+          <button data-rotate="1" aria-label="Rotate selected creature right" aria-keyshortcuts="E" ${selectedPiece ? '' : 'disabled'}>↷ <span>Rotate right</span></button>
         </div>
         <div class="history-tools">
           <button class="text-button" data-undo ${state.moves.length ? '' : 'disabled'}>Undo last piece</button>
@@ -244,7 +246,7 @@ function game(): string {
       </div>
     </div>
     <div class="status-row ${statusTone}" aria-live="polite" aria-atomic="true">${statusMessage || 'Choose a creature, turn it, then select its habitat.'}</div>
-    <div class="trail-wrap"><h3>Mutation score</h3>${scoreTrail()}</div>
+    <div class="trail-wrap"><h3>Changed neighbors</h3>${scoreTrail()}</div>
     ${resultPanel()}
   </section>`;
 }
@@ -263,7 +265,7 @@ function homePage(): string {
         <p class="section-label">One shared 6×6 board each day</p>
         <h1 id="page-title" tabindex="-1">${demoMode ? 'Place five sample creatures in order' : 'Place five creatures in the right order'}</h1>
         <p class="hero-summary">For daily puzzle players who want one shared spatial challenge that ends after five creatures.</p>
-        ${demoMode ? `<p class="action-note">The complete sample board is ready to play.</p>` : `<div class="hero-action"><a class="button primary" href="/demo" data-link>Try it with sample data</a><span>It opens a complete sample board.</span></div>`}
+        ${demoMode ? `<p class="action-note">The complete sample board is ready to play.</p>` : `<div class="hero-action"><a class="button primary" href="/demo" data-link>Try it with sample data</a><span>Opens a complete sample board.</span></div>`}
         <ul class="plain-facts">
           <li>Free to play.</li>
           <li>Progress stays in this browser.</li>
@@ -275,7 +277,6 @@ function homePage(): string {
     <section class="landscape" aria-label="Moon garden illustration">
       <div class="hero-art" aria-hidden="true">
         <picture><source media="(max-width: 700px)" srcset="/assets/moon-garden-720.webp"><img src="/assets/moon-garden-1200.webp" width="1200" height="800" alt="" fetchpriority="high" decoding="async"></picture>
-        <div class="art-caption">A moon garden built for five shapes</div>
       </div>
     </section>
     <section class="how" id="how" aria-labelledby="how-title">
@@ -283,19 +284,19 @@ function homePage(): string {
       <ol class="steps">
         <li><span>1</span><div><h3>Read the arrows</h3><p>An arrow scores only when its target creature is already on the board.</p></div></li>
         <li><span>2</span><div><h3>Turn each creature</h3><p>Rotate or flip its blocks until they match one dotted habitat.</p></div></li>
-        <li><span>3</span><div><h3>Place all five</h3><p>Finish the board, inspect each mutation, and compare your score tier.</p></div></li>
+        <li><span>3</span><div><h3>Place all five</h3><p>Finish the board, inspect each changed neighbor, and compare your result.</p></div></li>
       </ol>
     </section>
     <section class="limits" aria-labelledby="limits-title">
       <div><p class="section-label">Scope and privacy</p><h2 id="limits-title">One puzzle, then a clear ending</h2></div>
-      <div class="limits-copy"><p>There are no accounts, ads, boosters, or public leaderboards.</p><p>Your daily progress uses local browser storage. Demo actions use memory only.</p><p>The game loads from this site and can reopen offline after the first visit.</p></div>
+      <div class="limits-copy"><p>There are no accounts, ads, boosters, or public leaderboards.</p><p>Your daily progress stays in this browser. Demo actions use memory only.</p><p>The game loads from this site and can reopen offline after the first visit.</p></div>
     </section>
   </main>${footer()}${resetDialog()}`;
 }
 
 function textPage(kind: 'privacy' | 'terms' | '404'): string {
   const content = kind === 'privacy'
-    ? { title: 'Privacy without an account', label: 'Privacy', body: `<p>Shapeshift Set does not ask for your name, email address, or an account.</p><h2>What stays on your device</h2><p>The game saves daily moves, scores, and undo counts in your browser’s local storage. Demo play stays in memory and is discarded when you leave the demo.</p><h2>What this site receives</h2><p>The host may process standard request logs needed to serve and protect the site. The game sends no analytics events and loads no third-party scripts.</p><h2>Clear your progress</h2><p>Use “Reset board” inside the game, or clear this site’s storage in your browser settings.</p><p>Last updated: September 2, 2026.</p>` }
+    ? { title: 'Privacy without an account', label: 'Privacy', body: `<p>Shapeshift Set does not ask for your name, email address, or an account.</p><h2>What stays on your device</h2><p>The game saves daily moves, scores, and undo counts in this browser. Demo play uses memory only and never reads or changes real progress.</p><h2>What this site receives</h2><p>The host may process standard request logs needed to serve and protect the site. The game sends no analytics events and loads no code or files from other sites.</p><h2>Clear your progress</h2><p>Use “Reset board” inside the game, or clear this site’s storage in your browser settings.</p><p>Last updated: September 2, 2026.</p>` }
     : kind === 'terms'
       ? { title: 'Terms for fair daily play', label: 'Terms', body: `<p>Shapeshift Set is a free daily browser game for personal use.</p><h2>Using the game</h2><p>You may play, share your result, and inspect the open source code. Do not disrupt the site or use it to harm other people.</p><h2>Availability</h2><p>The game is provided as available. Daily boards or features may change. Local progress can be lost when browser storage is cleared.</p><h2>Ownership</h2><p>The code uses the MIT License. Original game art remains subject to the notices in the repository.</p><p>Last updated: September 2, 2026.</p>` }
       : { title: 'This page does not exist', label: '404', body: `<p>The address does not match a Shapeshift Set page.</p><a class="button primary" href="/" data-link>Return to today’s puzzle</a>` };
@@ -310,14 +311,14 @@ function resetDialog(): string {
 
 function route(): void {
   const path = window.location.pathname.replace(/\/$/, '') || '/';
-  demoMode = path === '/demo';
+  demoMode = path === '/demo' || new URLSearchParams(window.location.search).get('demo') === '1';
   statusMessage = '';
   statusTone = 'plain';
 
   if (path === '/' || path === '/demo') {
     const date = demoMode ? SAMPLE_DATE : utcDate();
     state = demoMode ? createGame(date) : loadRealGame(date);
-    document.title = demoMode ? 'Demo — Shapeshift Set' : 'Shapeshift Set — place a daily creature puzzle';
+    document.title = demoMode ? 'Demo — Shapeshift Set' : 'Shapeshift Set — order five creatures daily';
     setDescription(demoMode ? 'Try a complete Shapeshift Set sample board without saving progress.' : 'Place five shifting creatures on one shared 6x6 daily board. Finish a spatial puzzle with five placements.');
     setCanonical(demoMode ? '/demo' : '/');
     app.innerHTML = homePage();
@@ -345,6 +346,11 @@ function setCanonical(path: string): void {
 
 function setDescription(content: string): void {
   document.querySelector<HTMLMetaElement>('meta[name="description"]')!.content = content;
+  document.querySelector<HTMLMetaElement>('meta[property="og:description"]')!.content = content;
+  document.querySelector<HTMLMetaElement>('meta[name="twitter:description"]')!.content = content;
+  const title = document.title;
+  document.querySelector<HTMLMetaElement>('meta[property="og:title"]')!.content = title;
+  document.querySelector<HTMLMetaElement>('meta[name="twitter:title"]')!.content = title;
 }
 
 function renderGame(focusSelector?: string): void {
@@ -392,7 +398,7 @@ function placeAt(x: number, y: number): void {
   } else {
     const move = result.state.moves.at(-1)!;
     const name = pieceById(move.id).name;
-    announce(move.mutation ? `${name} changed its neighbor. One mutation scored.` : `${name} was placed, but its target was empty. No mutation scored.`, move.mutation ? 'good' : 'bad');
+    announce(move.mutation ? `${name} changed its neighbor. One changed neighbor scored.` : `${name} was placed, but its target creature was not placed. No changed neighbor scored.`, move.mutation ? 'good' : 'bad');
     state = result.state;
   }
   renderGame(`[data-x="${x}"][data-y="${y}"]`);
@@ -408,9 +414,9 @@ function resetGame(): void {
 
 function shareResult(): void {
   const marks = state.moves.map((move) => move.mutation ? '✦' : '·').join('');
-  const text = `Shapeshift Set ${state.date}\n${marks} ${state.score}/5 · ${scoreTier(state.score)}\nSeed ${state.seed}`;
+  const text = `Shapeshift Set ${state.date}\n${marks} ${state.score}/5 · ${scoreTier(state.score)}\nBoard ID ${state.seed}`;
   navigator.clipboard.writeText(text).then(() => {
-    announce('Result copied. It contains the score, tier, and seed.', 'good');
+    announce('Result copied. It contains the score, result, and Board ID.', 'good');
     renderGame('[data-share]');
   }).catch(() => {
     announce('The result could not be copied. Allow clipboard access and try again.', 'bad');
@@ -448,7 +454,7 @@ app.addEventListener('click', (event) => {
   }
   if (target.closest('[data-undo]')) {
     state = undoMove(state);
-    announce('The last piece returned to the tray. Its mutation was removed.');
+    announce('The last piece returned to the tray. Its changed-neighbor score was removed.');
     return renderGame('[data-undo]');
   }
   if (target.closest('[data-reset]')) {

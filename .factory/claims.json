@@ -8,17 +8,17 @@
   },
   {
     "id": "unique-perfect",
-    "claim": "Each board has one perfect five-mutation order.",
+    "claim": "Each board has one perfect five-change order, and consecutive daily answers differ.",
     "where": "result screen, README",
     "test": "npm test -- --grep @claim:unique-perfect",
-    "sandbox": "enumerate all 120 placement orders across four dated transforms"
+    "sandbox": "enumerate all 120 placement orders for 48 UTC dates and reject consecutive repeated answers"
   },
   {
     "id": "restart",
     "claim": "Play this board again resets all pieces and the score.",
     "where": "result screen",
     "test": "npm test -- --grep @claim:restart",
-    "sandbox": "finish /demo, replay, and assert zero score and an empty mutation trail"
+    "sandbox": "finish /demo, replay, and assert zero score and an empty changed-neighbor trail"
   },
   {
     "id": "local-progress",
@@ -29,10 +29,10 @@
   },
   {
     "id": "demo-isolation",
-    "claim": "Demo play writes no local progress.",
+    "claim": "Demo uses memory only and never reads or changes real progress.",
     "where": "demo banner, privacy",
     "test": "npm test -- --grep @claim:demo-isolation",
-    "sandbox": "fresh /demo context; play one move, assert empty localStorage, then enter real play"
+    "sandbox": "seed real local storage and a cookie; play and reset /demo; inspect storage, cookies, IndexedDB, then return to real play"
   },
   {
     "id": "offline-reload",
@@ -74,11 +74,11 @@
     "claim": "Undo last piece returns the latest creature to the tray and removes its score.",
     "where": "game controls",
     "test": "npm test -- --grep @claim:undo-last-piece",
-    "sandbox": "fresh /demo context; place Mote, undo, and inspect score, tray, and mutation score"
+    "sandbox": "fresh /demo context; place Mote, undo, and inspect score, tray, and changed-neighbor score"
   },
   {
     "id": "copy-result",
-    "claim": "Copy result puts the completed score, tier, and seed on the clipboard.",
+    "claim": "Copy result puts the completed score, result, and Board ID on the clipboard.",
     "where": "result screen",
     "test": "npm test -- --grep @claim:copy-result",
     "sandbox": "fresh /demo context with clipboard permission; complete a perfect board and read copied text"
@@ -103,6 +103,34 @@
     "where": "privacy, README",
     "test": "npm test -- --grep @claim:same-origin",
     "sandbox": "record every request during a /demo move and assert the product origin"
+  },
+  {
+    "id": "no-analytics",
+    "claim": "The game sends no analytics requests or event payloads.",
+    "where": "privacy, README",
+    "test": "npm test -- --grep @claim:no-analytics",
+    "sandbox": "record requests during a complete demo run and replay; reject analytics endpoints and event payloads"
+  },
+  {
+    "id": "no-leaderboard",
+    "claim": "The game has no public leaderboard.",
+    "where": "scope and privacy section, README",
+    "test": "npm test -- --grep @claim:no-leaderboard",
+    "sandbox": "finish a demo board and inspect all visible text and controls for leaderboard output"
+  },
+  {
+    "id": "mutation-scoring",
+    "claim": "An arrow scores only when its target creature is already on the board.",
+    "where": "game rule, How to play, README",
+    "test": "npm test -- --grep @claim:mutation-scoring",
+    "sandbox": "place a dependent before and after its target and assert the score and itemized changed-neighbor trail"
+  },
+  {
+    "id": "score-tiers",
+    "claim": "Results show Try again (0–2), Close (3–4), or Perfect (5), with one itemized result per creature.",
+    "where": "result screen, README",
+    "test": "npm test -- --grep @claim:score-tiers",
+    "sandbox": "finish deterministic demo runs at scores 1, 3, and 5 and inspect tier labels and all five trail items"
   },
   {
     "id": "utc-daily",
