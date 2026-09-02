@@ -57,8 +57,20 @@ npm run build
 /opt/fleet/lib/deploy-static.sh shapeshift-set dist
 ```
 
+## Deployment and production re-check
+
+Deployed `dist/` through `/opt/fleet/lib/deploy-static.sh shapeshift-set dist`.
+Azure deployment `ded8bf5d-c5b3-4a2c-a152-9235bdaca560` succeeded; the custom
+domain returned HTTPS 200 immediately after deployment.
+
+Cold production checks passed at <https://shapeshift-set.sociobot.in/> and
+<https://shapeshift-set.sociobot.in/demo>; reports are in
+`.factory/polish-evidence/live-home/verify.json` and
+`.factory/polish-evidence/live-demo/verify.json`. A scripted live sample run
+reached the 5/5 end screen, replay reset to 0/5, and `?demo=1` entered demo.
+Live Playwright Axe scans passed for `/`, `/demo`, `/privacy`, `/terms`, and
+the real 404 route (`/missing-page`, HTTP 404).
+
 ## Remaining work
 
-No known product or review findings remain. Deployment and cold production
-verification are the final work-order steps after this handoff commit is
-pushed.
+No known product or review findings remain.

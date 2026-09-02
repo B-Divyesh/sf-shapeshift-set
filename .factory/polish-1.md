@@ -31,3 +31,15 @@ closed below. Local screenshots and URL verifier reports live in
 - `/demo`: [`local-demo/verify.json`](polish-evidence/local-demo/verify.json) reports the same checks, including the demo title.
 - `/missing-page`: the static server returned HTTP 404; the browser suite verifies its real 404 response before and after service-worker control.
 - Integrated Playwright Axe scans passed with no serious or critical findings for `/`, `/demo`, `/privacy`, `/terms`, and `/missing-page`. The standalone Axe CLI could not locate Chrome in this container; the Playwright integration uses the installed browser.
+
+## Production re-check
+
+Deployed to <https://shapeshift-set.sociobot.in> on September 2, 2026. Cold
+URL verification passed for [home](polish-evidence/live-home/verify.json) and
+[demo](polish-evidence/live-demo/verify.json): correct titles, language, one
+h1/main, image alt coverage, and no console errors. A live scripted demo run
+reached “You changed 5 of 5,” captured at
+`polish-evidence/live-demo/live-end-screen.png`, then replay reset to 0/5; a
+cold `?demo=1` visit showed the demo banner. Live Playwright Axe checks passed
+for `/`, `/demo`, `/privacy`, `/terms`, and `/missing-page`; the last route
+returned HTTP 404.
