@@ -1,5 +1,21 @@
 # Shapeshift Set handoff
 
+## Independent verification status
+
+**FAIL — candidate `071f7ddff392dfd57131f3d1f49e968a7bf1a166` must not be released.**
+
+Independent verification on September 2, 2026 found four release blockers:
+
+- the normal full Playwright run fails the documented offline-reload claim;
+- the actual playable board is below the initial desktop and 390 px viewport;
+- several mobile demo/navigation hit targets are below 44 × 44 px; and
+- the README’s 3–5 minute duration claim and the required FPS claim lack
+  registered claim tests.
+
+See `.factory/verification.md` for commands, traces, live URL/commit matching,
+and all evidence. The builder’s self-reported checks below are retained as
+historical handoff context and are superseded by this independent verdict.
+
 ## What shipped
 
 - A complete 6×6 daily browser puzzle with five original polyomino creatures.
@@ -29,7 +45,7 @@ runtime service is required.
 The verifier demo is `/demo`. It uses the August 14, 2026 board, seed
 `989809312`, and memory-only state. Full details are in `.factory/demo.md`.
 
-## Verification completed
+## Builder-reported verification (superseded by independent FAIL)
 
 - `npm test`: 12/12 passed on September 2, 2026.
 - Ten documented claims passed from `.factory/claims.json`.
