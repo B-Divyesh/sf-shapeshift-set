@@ -8,8 +8,11 @@ function revisionedServiceWorker(): Plugin {
       const buildAssets = Object.values(bundle)
         .map((output) => `/${output.fileName}`)
         .filter((url) => /\/assets\/index-[^/]+\.(?:js|css)$/.test(url));
+      // Navigation is always fulfilled from index.html by the worker.  Keep
+      // this list to actual shell files instead of depending on the host's
+      // SPA fallback to cache each route separately.
       const shell = [...new Set([
-        '/', '/index.html', '/demo', '/privacy', '/terms',
+        '/', '/index.html',
         '/assets/favicon.svg', '/assets/apple-touch.png',
         '/assets/moon-garden-720.webp', '/assets/moon-garden-1200.webp',
         ...buildAssets,
@@ -43,6 +46,19 @@ self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET' || new URL(event.request.url).origin !== self.location.origin) return;
   event.respondWith((async () => {
     const cache = await caches.open(CACHE);
+    // A navigation can be /demo, /privacy, or a future SPA URL.  Those URLs
+    // are not files in the deploy output, so resolve them to the explicitly
+    // precached app shell before attempting the network.  This is what makes
+    // a brand-new offline navigation deterministic after the first visit.
+    if (event.request.mode === 'navigate') {
+      const shell = await cache.match('/index.html');
+      if (shell) return shell;
+      try {
+        return await fetch(event.request);
+      } catch {
+        throw new Error('Offline navigation shell not cached');
+      }
+    }
     const cached = await cache.match(event.request, { ignoreSearch: true });
     if (cached) return cached;
     try {
@@ -50,7 +66,6 @@ self.addEventListener('fetch', (event) => {
       if (response.ok) await cache.put(event.request, response.clone());
       return response;
     } catch {
-      if (event.request.mode === 'navigate') return (await cache.match('/index.html'));
       throw new Error('Offline asset not cached');
     }
   })());

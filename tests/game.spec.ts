@@ -109,29 +109,39 @@ test('@claim:demo-isolation demo play writes no local progress', async ({ page }
 
 test('@claim:offline-reload the demo reopens offline after its first visit', async ({ browser }) => {
   const context = await browser.newContext();
-  const firstVisit = await context.newPage();
-  await firstVisit.goto('http://127.0.0.1:4173/demo');
-  await firstVisit.evaluate(() => navigator.serviceWorker.ready);
-  await expect.poll(() => firstVisit.evaluate(async () => {
-    const registration = await navigator.serviceWorker.ready;
-    const cacheName = (await caches.keys()).find((name) => name.startsWith('shapeshift-set-'));
-    if (!cacheName) return false;
-    const cache = await caches.open(cacheName);
-    const shell = await cache.match('/index.html');
-    const firstLoadAssets = performance.getEntriesByType('resource')
-      .map((entry) => entry.name)
-      .filter((url) => /\/assets\/index-[^/]+\.(?:js|css)$/.test(url));
-    const cachedAssets = await Promise.all(firstLoadAssets.map((url) => cache.match(url)));
-    return Boolean(navigator.serviceWorker.controller && registration.active && shell
-      && firstLoadAssets.length === 2 && cachedAssets.every(Boolean));
-  })).toBe(true);
-  await firstVisit.close();
-  await context.setOffline(true);
-  const page = await context.newPage();
-  await page.goto('http://127.0.0.1:4173/demo', { waitUntil: 'domcontentloaded' });
-  await expect(page.getByRole('heading', { name: 'Place five sample creatures in order' })).toBeVisible();
-  await expect(page.locator('.board')).toBeVisible();
-  await context.close();
+  try {
+    const firstVisit = await context.newPage();
+    await firstVisit.goto('http://127.0.0.1:4173/demo');
+
+    // `ready` alone only means a registration is active.  Wait until this
+    // client is actually controlled and the exact current app shell exists.
+    await expect.poll(() => firstVisit.evaluate(async () => {
+      const registration = await navigator.serviceWorker.ready;
+      const cacheName = (await caches.keys()).find((name) => name.startsWith('shapeshift-set-'));
+      if (!cacheName || !registration.active || !navigator.serviceWorker.controller) return false;
+      const cache = await caches.open(cacheName);
+      const shell = await cache.match('/index.html');
+      // /demo is deliberately not precached as its own URL: this confirms
+      // that offline SPA navigation is served by the app shell, not a lucky
+      // route-specific cache match.
+      const demoRoute = await cache.match('/demo');
+      const firstLoadAssets = performance.getEntriesByType('resource')
+        .map((entry) => entry.name)
+        .filter((url) => /\/assets\/index-[^/]+\.(?:js|css)$/.test(url));
+      const cachedAssets = await Promise.all(firstLoadAssets.map((url) => cache.match(url)));
+      return Boolean(shell && !demoRoute && firstLoadAssets.length === 2 && cachedAssets.every(Boolean));
+    })).toBe(true);
+
+    await firstVisit.close();
+    await context.setOffline(true);
+    const page = await context.newPage();
+    await page.goto('http://127.0.0.1:4173/demo', { waitUntil: 'domcontentloaded' });
+    await expect(page.getByRole('heading', { name: 'Place five sample creatures in order' })).toBeVisible();
+    await expect(page.locator('.board')).toBeVisible();
+  } finally {
+    // This claim owns a dedicated context. Never close Playwright's shared browser.
+    await context.close();
+  }
 });
 
 test('@claim:piece-settle-duration a placed creature uses the documented 220 ms settle duration', async ({ page }) => {
