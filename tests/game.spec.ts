@@ -280,7 +280,11 @@ test('@claim:free-no-upsells the complete game has no payment, ad, account, or b
 
 test('pages have one h1, clear metadata, no console errors, and no serious axe findings', async ({ page }) => {
   const errors: string[] = [];
-  page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
+  page.on('console', (message) => {
+    const expectedMissingDocument = message.location().url.endsWith('/missing-page')
+      && /server responded with a status of 404/i.test(message.text());
+    if (message.type() === 'error' && !expectedMissingDocument) errors.push(message.text());
+  });
   for (const path of ['/', '/demo', '/privacy', '/terms', '/missing-page']) {
     await page.goto(path);
     await expect(page.locator('html')).toHaveAttribute('lang', 'en');
