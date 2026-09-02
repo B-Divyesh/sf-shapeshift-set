@@ -1,0 +1,11 @@
+{
+  "use_case": "stylized-concept",
+  "asset_type": "landing page hero and social preview",
+  "tool": "/opt/fleet/lib/gen-image.sh",
+  "deployment": "factory-image",
+  "date": "2026-09-02",
+  "size": "1536x1024",
+  "quality": "high",
+  "prompt": "Surreal editorial night garden, overhead-isometric impossible terraces arranged around a six-by-six pale stone clearing, five small abstract paper cutout creatures without faces, oversized moon and smooth rocks, deep navy dusk, warm ivory chalk, coral paper, lichen green accents, gold moonlight, matte gouache and cut-paper texture, strong negative space on the left, no people, no hands, no letters, no numbers, no text, no watermark, no logos, no recognizable characters, no gradients, clean edges, magazine illustration",
+  "review": "Approved: five abstract forms, no text, no logos, no people, no visible seams or unintended symbols."
+}

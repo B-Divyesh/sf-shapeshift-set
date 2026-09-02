@@ -1,0 +1,11 @@
+{
+  "slug": "shapeshift-set",
+  "title": "Shapeshift Set",
+  "artifact_class": "browser-game",
+  "summary": "Place five shifting creatures in the right order each day.",
+  "user": "Daily puzzle players who want one bounded five-minute spatial challenge.",
+  "smallest_useful_product": "A shared 6x6 daily board with five rotating polyomino creatures, neighboring mutations, one perfect order, and three score tiers.",
+  "monetization": "free",
+  "success_measure": "At least 40% of players finish with no more than ten undos.",
+  "state": "BUILDING"
+}
