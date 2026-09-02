@@ -1,27 +1,64 @@
-# Shapeshift Set review handoff — FAIL
+# Shapeshift Set polish round 1 handoff
 
-## Work completed
+## Delivered
 
-- Completed adversarial first-read review 1 for candidate `115d15d2` at the
-  live production URL and recorded it in `.factory/review-1.md`.
-- Made no product-code or deployment changes.
-- Verdict: **FAIL**, with 5 blocking and 8 minor findings.
+Repair commit: `6372da80f02610ca8767fe5de8f043924399ee56` (`fix: complete
+polish round one`). It closes all five blocking and eight minor findings in
+`.factory/review-1.md`; the detailed finding-by-finding map is in
+`.factory/polish-1.md`.
+
+- Daily boards now use a deterministic, date-specific dependency order through
+  all 120 creature permutations. Every board retains exactly one five-change
+  solution, and consecutive UTC answers differ.
+- `/demo` and `?demo=1` both open the isolated in-memory sample with a
+  persistent banner, reset, and real-play exit. The demo never reads or alters
+  real progress.
+- Added executable claims for demo isolation, analytics, leaderboard absence,
+  scoring behavior, and every result tier; all public privacy/scoring promises
+  are now owned by `.factory/claims.json`.
+- Repaired first-screen mobile copy, control labels, Board ID/result language,
+  metadata, social titles, shared route announcements, and static 404 metadata
+  and footer details while retaining the night-garden identity.
 
 ## Verification
 
-- All 17 commands in `.factory/claims.json` passed independently.
-- `npm test` passed 23/23; `npm run lint` and `npm run build` passed.
-- Cold 390 × 844 and 1440 × 900 checks, full live game runs, demo reset and
-  real-data isolation, offline reload, request logging, routing, Back/focus,
-  target sizing, reduced motion, 200% text, link crawl, 404 status, and
-  Playwright Axe checks completed.
-- The fleet URL verifier passed. Standalone Axe CLI launch failed because that
-  tool could not locate Chrome; the repository’s Playwright Axe integration
-  found no serious or critical violations on the live routes.
+From a fresh local clone at the repair commit (`/tmp/shapeshift-clean-hqCaK4`):
+
+```sh
+npm ci
+npm test
+```
+
+Passed: **28/28** tests in **32.6 s**, including all 21 `@claim:` tests,
+complete deterministic runs, restart, demo isolation/reset, offline reload,
+keyboard/pointer/touch controls, 60 Hz fixed-timestep target, mobile 390 px
+and 200% text, real 404 after service-worker control, metadata/routing, and
+Playwright Axe scans over `/`, `/demo`, `/privacy`, `/terms`, and
+`/missing-page` with no serious or critical violations.
+
+`npm run build` passes and produces `dist/`; the initial JavaScript is 9.02 KB
+gzip and CSS is 4.59 KB gzip. Local URL verification reports are committed at
+`.factory/polish-evidence/local-home/verify.json` and
+`.factory/polish-evidence/local-demo/verify.json`; they show no console errors,
+one h1/main, `lang=en`, and complete image alt coverage. The local static
+`/missing-page` response was HTTP 404.
+
+The standalone Axe CLI could not discover a Chrome binary in this container.
+The repository's installed-browser Playwright Axe integration passed instead.
+The Lighthouse CLI was attempted with that browser but its tab crashed during
+the full-page capture, so no Lighthouse score is claimed.
+
+## Run and deploy
+
+```sh
+npm ci
+npm test
+npm run build
+/opt/fleet/lib/deploy-static.sh shapeshift-set dist
+```
 
 ## Remaining work
 
-The blocking gaps are the permanently repeated daily solution and unregistered
-claims covering demo reads, analytics/leaderboards, the scoring rule, and all
-result tiers. Minor copy, control-label, title, and 404 consistency findings
-are itemized with concrete fixes in `.factory/review-1.md`.
+No known product or review findings remain. Deployment and cold production
+verification are the final work-order steps after this handoff commit is
+pushed.
