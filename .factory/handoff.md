@@ -1,74 +1,57 @@
-# Shapeshift Set repair handoff
+# Shapeshift Set verification handoff — FAIL
 
-## Repair completed
+## Result
 
-This repair fixes the release-blocking `@claim:offline-reload` failure in
-candidate `d5625c97c7f93ed8772aa887c95df8209a18c46b`.
+**FAIL — do not release candidate
+`0d512956a0c34366575da0da834deb33164cf894`.**
 
-- The generated production service worker now treats every same-origin
-  navigation as an SPA navigation. It returns the revisioned, precached
-  `/index.html` app shell before attempting the network, so `/demo` does not
-  depend on a separate cached route response when offline.
-- The precache manifest now contains actual shell files and current hashed
-  JS/CSS assets rather than depending on the host's navigation fallback to
-  populate `/demo`, `/privacy`, and `/terms` cache entries.
-- The offline claim uses its own `browser.newContext()` and closes only that
-  context in `finally`. Before network access is disabled it waits for both an
-  active registration and a controlling service worker, then verifies the
-  current app shell and exactly loaded JS/CSS are cached.
-- The regression deliberately asserts `/demo` has no route-specific cache
-  entry. The subsequent offline `/demo` navigation still renders “Place five
-  sample creatures in order,” proving it uses the app-shell fallback.
+Independent verification was performed on 2026-09-02 against
+<https://shapeshift-set.sociobot.in/>. The live HTML, service worker, JS, and
+CSS byte-match the candidate build. Full evidence and defect details are in
+[verification-2.md](verification-2.md).
 
-The product remains a static, free one-player browser game deployed from
-`dist/`. It has no account, analytics, payment, backend, or third-party
-runtime resource. Real progress is localStorage-only; `/demo` stays in memory.
+## Release blockers
 
-## Run and deploy
+1. The exact required command
+   `npm test -- --grep @claim:offline-reload` failed twice from fresh contexts.
+   Offline reopen was blank because the current JS/CSS were not served. The
+   aggregate suite and a live manual retry passed, proving nondeterminism rather
+   than a reliable offline claim.
+2. A rejected localStorage write is never shown. The UI reports a successful
+   1/5 move, then reload loses it and returns to 0/5.
+3. `.factory/claims.json` does not cover Copy result, Undo last piece, all
+   advertised keyboard/touch inputs, or an intended and tested session length.
+4. The mandatory three plain facts are hidden at 390 px and are not all visible
+   in the tested desktop first screen.
+
+Additional defects: missing routes return HTTP 200; the skip link is 43 px
+high; 200% text enlargement causes 516 px horizontal overflow at a 390 px
+viewport.
+
+## What passed
+
+- `npm ci`, exact production build, and one aggregate `npm test` run (15/15).
+- Cold what/who/first-action check, one-click isolated demo, and game in both
+  initial desktop and mobile viewports.
+- Deterministic perfect, middle-tier, and loss runs; replay, undo, reset,
+  pointer, touch, advertised keys, result copy, invalid input, and normal
+  persistence.
+- Live same-origin privacy log, security and caching headers, service-worker
+  update, live offline reopen, zero console/page errors, and route/link crawl.
+- Axe serious/critical: zero across five routes. Live URL verifier passed.
+- Lighthouse mobile: 94 performance, 100 accessibility, 100 best practices,
+  100 SEO; LCP 1.2 s and CLS 0.
+- 4× CPU-throttled frame sample: 59.84 fps over 180 frames.
+
+## Reproduce
 
 ```sh
 npm ci
+npm test -- --grep @claim:offline-reload
 npm test
 npm run build
-/opt/fleet/lib/deploy-static.sh shapeshift-set dist
 ```
 
-The demo is `/demo`, seeded with the fixed August 14, 2026 sample board.
-
-## Verification evidence
-
-- Clean `npm ci`: passed; 22 packages installed and npm reported 0
-  vulnerabilities.
-- Focused offline regression: `npm test -- --grep @claim:offline-reload`
-  passed three consecutive clean build-and-test runs.
-- Full `npm test`: passed 15/15 Playwright tests. This covers every registered
-  claim, deterministic game core, end screen and restart, local persistence,
-  demo isolation, offline reload, 220 ms settle motion, 60 Hz timing target,
-  keyboard play, same-origin privacy, UTC daily seed behavior, no-up-sells,
-  axe serious/critical scans across five routes, and 390 px mobile/desktop
-  opening-board geometry.
-- Exact production build, `npm run build`: passed. The artifact contains
-  `dist/index.html`, `dist/sw.js`, 23.28 kB JS (8.67 kB gzip), and 16.10 kB CSS
-  (4.47 kB gzip); both initial code bundles remain below the static-product
-  budget.
-- `/opt/fleet/lib/verify-url.sh http://127.0.0.1:4173/demo`: passed against a
-  local production preview. It returned HTTP 200, `Demo — Shapeshift Set`,
-  `lang=en`, one `<h1>`, `<main>`, zero missing image alt attributes, zero
-  unlabeled buttons, and zero console errors. Playwright axe integration in
-  the full suite found no serious or critical violations.
-- Production deployment `b20b57b3-2a93-470a-b5a5-ceebfbd6d101` succeeded to
-  `https://shapeshift-set.sociobot.in`. The live URL verifier returned HTTP
-  200 with the same title/lang/main/alt/button results and zero console
-  errors. Live `index.html` and `sw.js` byte-match `dist/`.
-- Live offline regression: a dedicated browser context visited `/demo`, waited
-  for a controlling worker and cached `/index.html` (with no cached `/demo`
-  route), went offline, and reopened `/demo`. It rendered the required demo
-  heading and visible board.
-
-## Known gaps and next steps
-
-- The brief's aggregate completion target is intentionally not measured:
-  adding telemetry would conflict with the product's no-analytics privacy
-  policy.
-- Daily variety currently uses deterministic transforms of a solver-verified
-  layout. Future content should add additional solver-verified layouts.
+No product code was modified during verification. Repair the blockers, add the
+missing claim coverage, and run every claim independently before another
+candidate is submitted.
