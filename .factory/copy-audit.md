@@ -1,6 +1,6 @@
 # Landing copy audit
 
-Audited September 2, 2026. Counts treat hyphenated terms and numbers as one
+Re-audited September 2, 2026 after the board-first repair. Counts treat hyphenated terms and numbers as one
 word. Headings, labels, and button text are listed separately because they are
 not sentences.
 
@@ -18,7 +18,8 @@ not sentences.
 
 The headline is seven words. The audience and outcome sentence is fifteen
 words. The first action names its result, and the adjacent sentence explains
-what opens.
+what opens. At 390 px the opening copy is compact so the playable board enters
+the initial viewport.
 
 ## Game and supporting sections
 

@@ -1,6 +1,67 @@
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
+
+function revisionedServiceWorker(): Plugin {
+  return {
+    name: 'revisioned-service-worker',
+    apply: 'build',
+    generateBundle(_, bundle) {
+      const buildAssets = Object.values(bundle)
+        .map((output) => `/${output.fileName}`)
+        .filter((url) => /\/assets\/index-[^/]+\.(?:js|css)$/.test(url));
+      const shell = [...new Set([
+        '/', '/index.html', '/demo', '/privacy', '/terms',
+        '/assets/favicon.svg', '/assets/apple-touch.png',
+        '/assets/moon-garden-720.webp', '/assets/moon-garden-1200.webp',
+        ...buildAssets,
+      ])];
+      const indexOutput = Object.values(bundle).find((output) => output.fileName === 'index.html');
+      const revisionInput = `${shell.join('|')}|${indexOutput && 'source' in indexOutput ? String(indexOutput.source) : ''}`;
+      let hash = 5381;
+      for (const character of revisionInput) hash = (hash * 33) ^ character.charCodeAt(0);
+      const cache = `shapeshift-set-${(hash >>> 0).toString(36)}`;
+      this.emitFile({
+        type: 'asset',
+        fileName: 'sw.js',
+        source: `const CACHE = '${cache}';\nconst SHELL = ${JSON.stringify(shell)};\n
+self.addEventListener('install', (event) => {
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE);
+    await cache.addAll(SHELL);
+    await self.skipWaiting();
+  })());
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil((async () => {
+    const names = await caches.keys();
+    await Promise.all(names.filter((name) => name !== CACHE).map((name) => caches.delete(name)));
+    await self.clients.claim();
+  })());
+});
+
+self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET' || new URL(event.request.url).origin !== self.location.origin) return;
+  event.respondWith((async () => {
+    const cache = await caches.open(CACHE);
+    const cached = await cache.match(event.request, { ignoreSearch: true });
+    if (cached) return cached;
+    try {
+      const response = await fetch(event.request);
+      if (response.ok) await cache.put(event.request, response.clone());
+      return response;
+    } catch {
+      if (event.request.mode === 'navigate') return (await cache.match('/index.html'));
+      throw new Error('Offline asset not cached');
+    }
+  })());
+});\n`,
+      });
+    },
+  };
+}
 
 export default defineConfig({
+  plugins: [revisionedServiceWorker()],
   build: {
     target: 'es2022',
     sourcemap: true,

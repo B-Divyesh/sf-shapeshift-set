@@ -42,6 +42,20 @@
     "sandbox": "dedicated browser context at /demo; wait for service worker, go offline, and reload"
   },
   {
+    "id": "piece-settle-duration",
+    "claim": "Placed creatures settle in 220 milliseconds when motion is enabled.",
+    "where": "README",
+    "test": "npm test -- --grep @claim:piece-settle-duration",
+    "sandbox": "fresh /demo context; place Mote and inspect its rendered animation duration"
+  },
+  {
+    "id": "frame-rate",
+    "claim": "The game loop has a 60 frames-per-second timing target.",
+    "where": "README",
+    "test": "npm test -- --grep @claim:frame-rate",
+    "sandbox": "fresh /demo context; measure fixed-timestep ticks over one second"
+  },
+  {
     "id": "keyboard-controls",
     "claim": "Keyboard controls can select, turn, and place creatures.",
     "where": "README",

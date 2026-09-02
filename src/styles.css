@@ -96,27 +96,25 @@ a:hover { text-decoration-color: var(--coral); }
 .wordmark-mark i:last-child { grid-column: 2; background: var(--lichen); }
 
 .site-header nav { display: flex; align-items: center; gap: 20px; }
-.site-header nav a { min-height: 44px; display: grid; place-items: center; color: var(--mist); font-size: .91rem; font-weight: 650; }
+.site-header nav a { min-width: 44px; min-height: 44px; display: grid; place-items: center; color: var(--mist); font-size: .91rem; font-weight: 650; }
 
 main, .site-footer { width: min(1184px, calc(100% - 32px)); margin-inline: auto; }
 
-.hero {
+.opening {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, .88fr) minmax(390px, 1.12fr);
-  min-height: 600px;
+  grid-template-columns: minmax(280px, .52fr) minmax(0, 1fr);
+  gap: 24px;
   margin-top: 24px;
-  overflow: hidden;
-  background: var(--ink);
-  clip-path: polygon(0 0, 96% 0, 100% 9%, 100% 100%, 0 100%);
 }
 
-.hero-copy {
+.opening-copy {
   position: relative;
   z-index: 2;
-  align-self: center;
-  max-width: 560px;
-  padding: 64px 24px 64px 56px;
+  align-self: stretch;
+  padding: clamp(28px, 4vw, 56px);
+  background: var(--ink);
+  clip-path: polygon(0 0, 94% 0, 100% 5%, 100% 100%, 0 96%);
 }
 
 .section-label {
@@ -182,6 +180,7 @@ h3 { letter-spacing: -.018em; }
 }
 .plain-facts li::before { content: '—'; margin-right: 8px; color: var(--lichen); }
 
+.landscape { position: relative; min-height: 300px; margin: 48px 0 0; overflow: hidden; }
 .hero-art { position: relative; min-width: 0; min-height: 100%; overflow: hidden; }
 .hero-art picture, .hero-art img { display: block; width: 100%; height: 100%; }
 .hero-art img { object-fit: cover; object-position: 58% center; }
@@ -212,8 +211,8 @@ h3 { letter-spacing: -.018em; }
   color: #17200a;
   font-size: .88rem;
 }
-.demo-banner div { display: flex; gap: 16px; align-items: center; }
-.demo-banner button, .demo-banner a { min-height: 32px; border: 0; background: transparent; color: #17200a; font-weight: 800; text-decoration: underline; cursor: pointer; }
+.demo-banner div { display: flex; gap: 8px; align-items: center; }
+.demo-banner button, .demo-banner a { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 0 8px; border: 0; background: transparent; color: #17200a; font-weight: 800; text-decoration: underline; cursor: pointer; }
 
 .game-shell {
   position: relative;
@@ -224,6 +223,7 @@ h3 { letter-spacing: -.018em; }
   border: 1px solid rgba(255, 248, 232, .2);
   clip-path: polygon(0 0, 98% 0, 100% 4%, 100% 100%, 2% 100%, 0 96%);
 }
+.opening .game-shell { margin: 0; padding: clamp(20px, 3vw, 32px); }
 
 .game-topline { display: flex; justify-content: space-between; gap: 24px; align-items: end; }
 .game-topline h2 { margin: 0; }
@@ -362,7 +362,8 @@ h3 { letter-spacing: -.018em; }
 .limits-copy p { max-width: 52ch; margin-bottom: 20px; line-height: 1.55; }
 
 .site-footer { display: grid; grid-template-columns: 1fr auto; gap: 16px 32px; padding: 40px 0 56px; border-top: 1px solid rgba(255, 248, 232, .2); color: var(--mist); font-size: .88rem; }
-.footer-links { display: flex; gap: 20px; flex-wrap: wrap; justify-content: end; }
+.footer-links { display: flex; gap: 12px; flex-wrap: wrap; justify-content: end; }
+.footer-links a { display: inline-flex; align-items: center; min-width: 44px; min-height: 44px; }
 .footer-note { grid-column: 1 / -1; max-width: 70ch; font-size: .75rem; }
 
 .text-page { min-height: 65vh; padding: clamp(64px, 10vw, 128px) 0; }
@@ -399,9 +400,9 @@ h3 { letter-spacing: -.018em; }
 }
 
 @media (max-width: 880px) {
-  .hero { grid-template-columns: 1fr; }
-  .hero-copy { max-width: 650px; padding: 48px 32px 32px; }
-  .hero-art { min-height: 290px; }
+  .opening { grid-template-columns: 1fr; }
+  .opening-copy { max-width: 650px; }
+  .landscape { min-height: 290px; }
   .hero-art::after { background: linear-gradient(180deg, var(--ink), transparent 35%); }
   .game-layout { grid-template-columns: 1fr; }
   .game-tools { grid-template-columns: 100px 1fr; }
@@ -415,19 +416,24 @@ h3 { letter-spacing: -.018em; }
   .site-header nav a { padding: 0 5px; font-size: .76rem; }
   .site-header nav a:nth-child(3) { display: none; }
   .wordmark span:last-child { font-size: .88rem; }
-  .hero { min-height: 0; margin-top: 12px; clip-path: polygon(0 0, 96% 0, 100% 4%, 100% 100%, 0 100%); }
-  .hero-copy { padding: 32px 20px 24px; }
-  h1 { max-width: 11ch; margin-bottom: 16px; font-size: clamp(2.45rem, 12vw, 3.4rem); }
-  .hero-summary { margin-bottom: 20px; font-size: 1rem; }
+  .opening { gap: 12px; margin-top: 12px; }
+  .opening-copy { padding: 16px; }
+  .opening-copy .section-label, .opening-copy .hero-action span, .opening-copy .action-note { display: none; }
+  .opening-copy .plain-facts { display: none; }
+  h1 { max-width: 14ch; margin-bottom: 8px; font-size: clamp(1.55rem, 7.5vw, 2rem); }
+  .hero-summary { margin-bottom: 8px; font-size: .92rem; line-height: 1.4; }
   .hero-action { align-items: flex-start; }
   .plain-facts { margin-top: 24px; padding-top: 16px; font-size: .86rem; }
-  .hero-art { min-height: 190px; }
+  .landscape { min-height: 190px; margin-top: 24px; }
   .art-caption { right: 12px; bottom: 12px; }
   .demo-banner { position: relative; flex-direction: column; gap: 3px; align-items: flex-start; }
   .game-shell { margin: 24px 0 72px; padding: 24px 12px 32px; clip-path: none; }
+  .opening .game-shell { margin: 0; padding: 16px 12px 24px; }
   .game-topline { align-items: start; }
-  .game-topline h2 { font-size: 2.2rem; }
-  .game-rule { margin-bottom: 24px; font-size: .93rem; }
+  .game-topline h2 { font-size: 1.6rem; white-space: nowrap; }
+  .game-topline .section-label { margin-bottom: 4px; font-size: .67rem; }
+  .seed { display: none; }
+  .game-rule { margin: 10px 0 14px; font-size: .85rem; }
   .game-layout { gap: 32px; }
   .board-wrap { box-shadow: 7px 7px 0 rgba(6, 10, 20, .4); }
   .board { gap: 2px; }

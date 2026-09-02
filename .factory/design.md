@@ -59,8 +59,8 @@ creature changes a seed tile. Each later creature changes the prior creature,
 so five successful mutations require one unique placement order. A placed piece
 cannot score retroactively. Players may undo or reset and can inspect every
 mutation in the score trail. The three result tiers are Quiet (0–2), Shifting
-(3–4), and Radiant (5). The intended run is 3–5 minutes. Daily transforms change
-spatial reading, not difficulty.
+(3–4), and Radiant (5). A round ends after five placements. Daily transforms
+change spatial reading, not difficulty.
 
 Keyboard grammar: Tab selects controls; number keys select creatures; Q/E or
 the rotate buttons turn a creature; arrows move the board cursor; Enter places.
@@ -69,7 +69,9 @@ are always available. Sound is absent, so no mute control is needed.
 
 ## Motion policy
 
-Paper pieces settle onto the board in 220 ms with a small scale-down. A
+Paper pieces settle onto the board in 220 ms with a small scale-down. The
+fixed-timestep game loop targets 60 frames per second and pauses simulation
+while the page is hidden. A
 successful mutation sends one 600 ms glow along its visible link. The landscape
 stays still so it does not compete with the board. Motion never communicates
 the only version of a state. Under `prefers-reduced-motion`, transitions stop;

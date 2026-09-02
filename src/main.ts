@@ -26,6 +26,33 @@ let state: GameState;
 let demoMode = false;
 let statusMessage = '';
 let statusTone: 'plain' | 'good' | 'bad' = 'plain';
+const FIXED_STEP_MS = 1000 / 60;
+let lastFrame = performance.now();
+let frameRemainder = 0;
+let simulationTicks = 0;
+
+function runGameLoop(now: number): void {
+  const elapsed = Math.min(now - lastFrame, 250);
+  lastFrame = now;
+  if (!document.hidden) {
+    frameRemainder += elapsed;
+    let steps = 0;
+    while (frameRemainder >= FIXED_STEP_MS && steps < 15) {
+      frameRemainder -= FIXED_STEP_MS;
+      simulationTicks += 1;
+      steps += 1;
+    }
+    document.documentElement.dataset.gameTicks = String(simulationTicks);
+  }
+  requestAnimationFrame(runGameLoop);
+}
+
+document.documentElement.dataset.frameTarget = '60';
+requestAnimationFrame(runGameLoop);
+document.addEventListener('visibilitychange', () => {
+  lastFrame = performance.now();
+  frameRemainder = 0;
+});
 
 const pieceById = (id: PieceId) => PIECES.find((piece) => piece.id === id)!;
 
@@ -231,24 +258,26 @@ function demoBanner(): string {
 
 function homePage(): string {
   return `${header()}${demoBanner()}<main id="main" tabindex="-1">
-    <section class="hero">
-      <div class="hero-copy">
+    <section class="opening" aria-labelledby="page-title">
+      <div class="opening-copy">
         <p class="section-label">One shared 6×6 board each day</p>
-        <h1 tabindex="-1">${demoMode ? 'Place five sample creatures in order' : 'Place five creatures in the right order'}</h1>
+        <h1 id="page-title" tabindex="-1">${demoMode ? 'Place five sample creatures in order' : 'Place five creatures in the right order'}</h1>
         <p class="hero-summary">For daily puzzle players who want one shared spatial challenge that ends after five creatures.</p>
-        ${demoMode ? `<a class="button primary" href="#game">Play the sample board</a><p class="action-note">The full board is ready below.</p>` : `<div class="hero-action"><a class="button primary" href="/demo" data-link>Try it with sample data</a><span>It opens a complete sample board.</span></div>`}
+        ${demoMode ? `<p class="action-note">The complete sample board is ready to play.</p>` : `<div class="hero-action"><a class="button primary" href="/demo" data-link>Try it with sample data</a><span>It opens a complete sample board.</span></div>`}
         <ul class="plain-facts">
           <li>Free to play.</li>
           <li>Progress stays in this browser.</li>
           <li>A new shared board appears each UTC day.</li>
         </ul>
       </div>
+      ${game()}
+    </section>
+    <section class="landscape" aria-label="Moon garden illustration">
       <div class="hero-art" aria-hidden="true">
         <picture><source media="(max-width: 700px)" srcset="/assets/moon-garden-720.webp"><img src="/assets/moon-garden-1200.webp" width="1200" height="800" alt="" fetchpriority="high" decoding="async"></picture>
         <div class="art-caption">A moon garden built for five shapes</div>
       </div>
     </section>
-    ${game()}
     <section class="how" id="how" aria-labelledby="how-title">
       <div class="section-intro"><p class="section-label">Three actions</p><h2 id="how-title">How to play</h2></div>
       <ol class="steps">
@@ -289,7 +318,7 @@ function route(): void {
     const date = demoMode ? SAMPLE_DATE : utcDate();
     state = demoMode ? createGame(date) : loadRealGame(date);
     document.title = demoMode ? 'Demo — Shapeshift Set' : 'Shapeshift Set — place a daily creature puzzle';
-    setDescription(demoMode ? 'Try a complete Shapeshift Set sample board without saving progress.' : 'Place five shifting creatures on one shared 6x6 daily board. Finish a spatial puzzle in about five minutes.');
+    setDescription(demoMode ? 'Try a complete Shapeshift Set sample board without saving progress.' : 'Place five shifting creatures on one shared 6x6 daily board. Finish a spatial puzzle with five placements.');
     setCanonical(demoMode ? '/demo' : '/');
     app.innerHTML = homePage();
   } else if (path === '/privacy') {
@@ -483,5 +512,5 @@ window.addEventListener('offline', () => {
 route();
 
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => undefined));
+  navigator.serviceWorker.register('/sw.js').catch(() => undefined);
 }

@@ -112,6 +112,19 @@ test('@claim:offline-reload the demo reopens offline after its first visit', asy
   const firstVisit = await context.newPage();
   await firstVisit.goto('http://127.0.0.1:4173/demo');
   await firstVisit.evaluate(() => navigator.serviceWorker.ready);
+  await expect.poll(() => firstVisit.evaluate(async () => {
+    const registration = await navigator.serviceWorker.ready;
+    const cacheName = (await caches.keys()).find((name) => name.startsWith('shapeshift-set-'));
+    if (!cacheName) return false;
+    const cache = await caches.open(cacheName);
+    const shell = await cache.match('/index.html');
+    const firstLoadAssets = performance.getEntriesByType('resource')
+      .map((entry) => entry.name)
+      .filter((url) => /\/assets\/index-[^/]+\.(?:js|css)$/.test(url));
+    const cachedAssets = await Promise.all(firstLoadAssets.map((url) => cache.match(url)));
+    return Boolean(navigator.serviceWorker.controller && registration.active && shell
+      && firstLoadAssets.length === 2 && cachedAssets.every(Boolean));
+  })).toBe(true);
   await firstVisit.close();
   await context.setOffline(true);
   const page = await context.newPage();
@@ -119,6 +132,29 @@ test('@claim:offline-reload the demo reopens offline after its first visit', asy
   await expect(page.getByRole('heading', { name: 'Place five sample creatures in order' })).toBeVisible();
   await expect(page.locator('.board')).toBeVisible();
   await context.close();
+});
+
+test('@claim:piece-settle-duration a placed creature uses the documented 220 ms settle duration', async ({ page }) => {
+  await page.goto('/demo');
+  await placePiece(page, 'mote');
+  const duration = await page.locator('.board-cell.placed').first().evaluate((cell) =>
+    getComputedStyle(cell).animationDuration);
+  expect(duration).toBe('0.22s');
+});
+
+test('@claim:frame-rate the game loop advances at the 60 frames-per-second target', async ({ page }) => {
+  await page.goto('/demo');
+  const reading = await page.evaluate(async () => {
+    const start = performance.now();
+    const startTicks = Number(document.documentElement.dataset.gameTicks);
+    await new Promise<void>((resolve) => setTimeout(resolve, 1_000));
+    const elapsed = performance.now() - start;
+    const ticks = Number(document.documentElement.dataset.gameTicks) - startTicks;
+    return { target: document.documentElement.dataset.frameTarget, elapsed, ticks, rate: ticks * 1_000 / elapsed };
+  });
+  expect(reading.target).toBe('60');
+  expect(reading.rate).toBeGreaterThanOrEqual(55);
+  expect(reading.rate).toBeLessThanOrEqual(65);
 });
 
 test('@claim:keyboard-controls a creature can be selected, turned, and placed by keyboard', async ({ page }) => {
@@ -187,4 +223,25 @@ test('the mobile layout keeps the board and controls within 390 pixels', async (
     const box = await button.boundingBox();
     expect(box?.height).toBeGreaterThanOrEqual(44);
   }
+  for (const control of await page.locator('.site-header nav a, .demo-banner button, .demo-banner a, .footer-links a').all()) {
+    const box = await control.boundingBox();
+    if (!box) continue;
+    expect(box?.width).toBeGreaterThanOrEqual(44);
+    expect(box?.height).toBeGreaterThanOrEqual(44);
+  }
+  const board = await page.locator('.board').boundingBox();
+  expect(board?.y).toBeLessThan(844);
+  expect((board?.y ?? 844) + (board?.height ?? 0)).toBeLessThanOrEqual(844);
+  await page.goto('/');
+  const realBoard = await page.locator('.board').boundingBox();
+  expect((realBoard?.y ?? 844) + (realBoard?.height ?? 0)).toBeLessThanOrEqual(844);
+  await expect(page.getByRole('link', { name: 'Try it with sample data' })).toBeVisible();
+});
+
+test('the opening desktop viewport contains a playable board', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/');
+  const board = await page.locator('.board').boundingBox();
+  expect(board?.y).toBeLessThan(900);
+  expect((board?.y ?? 900) + (board?.height ?? 0)).toBeLessThanOrEqual(900);
 });
