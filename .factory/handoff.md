@@ -1,76 +1,59 @@
-# Shapeshift Set polish round 1 handoff
+# Shapeshift Set independent verification 4 handoff
 
-## Delivered
+## Result
 
-Repair commit: `6372da80f02610ca8767fe5de8f043924399ee56` (`fix: complete
-polish round one`). It closes all five blocking and eight minor findings in
-`.factory/review-1.md`; the detailed finding-by-finding map is in
-`.factory/polish-1.md`.
+**FAIL — do not release candidate
+`1df31e89da4fe5977ccf12dfbc153f764a133c5e`.**
 
-- Daily boards now use a deterministic, date-specific dependency order through
-  all 120 creature permutations. Every board retains exactly one five-change
-  solution, and consecutive UTC answers differ.
-- `/demo` and `?demo=1` both open the isolated in-memory sample with a
-  persistent banner, reset, and real-play exit. The demo never reads or alters
-  real progress.
-- Added executable claims for demo isolation, analytics, leaderboard absence,
-  scoring behavior, and every result tier; all public privacy/scoring promises
-  are now owned by `.factory/claims.json`.
-- Repaired first-screen mobile copy, control labels, Board ID/result language,
-  metadata, social titles, shared route announcements, and static 404 metadata
-  and footer details while retaining the night-garden identity.
+Tested on 2026-09-02 UTC against
+<https://shapeshift-set.sociobot.in/>. The live deployment byte-matches the
+candidate. Product code was not modified.
 
-## Verification
+## Release blocker
 
-From a fresh local clone at the repair commit (`/tmp/shapeshift-clean-hqCaK4`):
+**P1:** Lighthouse 13.0.1 reports eight serious WCAG 2.5.3
+`label-content-name-mismatch` failures on the five creature buttons and three
+turn controls. Their `aria-label` values do not contain the visible labels in
+the displayed order, which can prevent speech-input users from activating the
+controls by their visible names. The full evidence and repair direction are in
+[`.factory/verification-4.md`](verification-4.md).
 
-```sh
-npm ci
-npm test
-```
+No other P0, P1, P2, or P3 product defect was found.
 
-Passed: **28/28** tests in **32.6 s**, including all 21 `@claim:` tests,
-complete deterministic runs, restart, demo isolation/reset, offline reload,
-keyboard/pointer/touch controls, 60 Hz fixed-timestep target, mobile 390 px
-and 200% text, real 404 after service-worker control, metadata/routing, and
-Playwright Axe scans over `/`, `/demo`, `/privacy`, `/terms`, and
-`/missing-page` with no serious or critical violations.
+## Verification summary
 
-`npm run build` passes and produces `dist/`; the initial JavaScript is 9.02 KB
-gzip and CSS is 4.59 KB gzip. Local URL verification reports are committed at
-`.factory/polish-evidence/local-home/verify.json` and
-`.factory/polish-evidence/local-demo/verify.json`; they show no console errors,
-one h1/main, `lang=en`, and complete image alt coverage. The local static
-`/missing-page` response was HTTP 404.
+- All 21 exact commands in `.factory/claims.json`: PASS.
+- `npm test`: PASS, 28/28 tests.
+- `npm run lint`: PASS.
+- `npm run build`: PASS; `dist/` produced.
+- Cold first read and one-click isolated demo: PASS at desktop and 390 px.
+- Live loss, replay reset, perfect win, copy, keyboard-only run, pointer, and
+  touch: PASS.
+- Local progress, storage-error recovery, demo isolation, offline reload, and
+  service-worker cache replacement: PASS.
+- Privacy request log: five same-origin GETs, no POSTs, analytics, console
+  errors, or page errors.
+- Headers, immutable asset caching, 404, routing, metadata, links, 200% text,
+  reduced motion, and 44 px touch targets: PASS.
+- Lighthouse mobile `/demo`: Performance 90, Accessibility 100, Best
+  Practices 100, SEO 100. The separate serious experimental Axe audit still
+  blocks release.
+- 4× CPU mobile measurement: 60.00 rendered fps, 59.97 Hz simulation, and
+  152 ms worst sampled interaction.
 
-The standalone Axe CLI could not discover a Chrome binary in this container.
-The repository's installed-browser Playwright Axe integration passed instead.
-The Lighthouse CLI was attempted with that browser but its tab crashed during
-the full-page capture, so no Lighthouse score is claimed.
+## Evidence
 
-## Run and deploy
+Reports and captures are under `.factory/verification-4-evidence/`. The full
+independent record is `.factory/verification-4.md`.
+
+## Reproduce
 
 ```sh
 npm ci
 npm test
+npm run lint
 npm run build
-/opt/fleet/lib/deploy-static.sh shapeshift-set dist
 ```
 
-## Deployment and production re-check
-
-Deployed `dist/` through `/opt/fleet/lib/deploy-static.sh shapeshift-set dist`.
-Azure deployment `ded8bf5d-c5b3-4a2c-a152-9235bdaca560` succeeded; the custom
-domain returned HTTPS 200 immediately after deployment.
-
-Cold production checks passed at <https://shapeshift-set.sociobot.in/> and
-<https://shapeshift-set.sociobot.in/demo>; reports are in
-`.factory/polish-evidence/live-home/verify.json` and
-`.factory/polish-evidence/live-demo/verify.json`. A scripted live sample run
-reached the 5/5 end screen, replay reset to 0/5, and `?demo=1` entered demo.
-Live Playwright Axe scans passed for `/`, `/demo`, `/privacy`, `/terms`, and
-the real 404 route (`/missing-page`, HTTP 404).
-
-## Remaining work
-
-No known product or review findings remain.
+After repairing the accessible names, rerun Lighthouse or Axe with a rule set
+that includes `label-content-name-mismatch`, then repeat all existing gates.
