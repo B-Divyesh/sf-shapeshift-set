@@ -109,12 +109,13 @@ test('@claim:demo-isolation demo play writes no local progress', async ({ page }
 
 test('@claim:offline-reload the demo reopens offline after its first visit', async ({ browser }) => {
   const context = await browser.newContext();
-  const page = await context.newPage();
-  await page.goto('http://127.0.0.1:4173/demo');
-  await page.evaluate(() => navigator.serviceWorker.ready);
-  await page.waitForFunction(() => navigator.serviceWorker.controller !== null);
+  const firstVisit = await context.newPage();
+  await firstVisit.goto('http://127.0.0.1:4173/demo');
+  await firstVisit.evaluate(() => navigator.serviceWorker.ready);
+  await firstVisit.close();
   await context.setOffline(true);
-  await page.reload({ waitUntil: 'domcontentloaded' });
+  const page = await context.newPage();
+  await page.goto('http://127.0.0.1:4173/demo', { waitUntil: 'domcontentloaded' });
   await expect(page.getByRole('heading', { name: 'Place five sample creatures in order' })).toBeVisible();
   await expect(page.locator('.board')).toBeVisible();
   await context.close();

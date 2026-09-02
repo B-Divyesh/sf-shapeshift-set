@@ -109,7 +109,7 @@ function mutationLines(): string {
     const y1 = from[1] + (dy / length) * inset;
     const x2 = to[0] - (dx / length) * inset;
     const y2 = to[1] - (dy / length) * inset;
-    return `<line class="mutation-link link-${piece.id}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" marker-end="url(#arrow)" />`;
+    return `<line class="mutation-link link-${piece.id}${piece.mutation ? ' changed' : ''}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" marker-end="url(#arrow)" />`;
   }).join('');
   const mote = centers.get('mote')!;
   return `<svg class="board-links" viewBox="0 0 6 6" aria-hidden="true">
@@ -234,7 +234,7 @@ function homePage(): string {
     <section class="hero">
       <div class="hero-copy">
         <p class="section-label">One shared 6×6 board each day</p>
-        <h1>${demoMode ? 'Place five sample creatures in order' : 'Place five creatures in the right order'}</h1>
+        <h1 tabindex="-1">${demoMode ? 'Place five sample creatures in order' : 'Place five creatures in the right order'}</h1>
         <p class="hero-summary">For daily puzzle players who want one shared spatial challenge that ends after five creatures.</p>
         ${demoMode ? `<a class="button primary" href="#game">Play the sample board</a><p class="action-note">The full board is ready below.</p>` : `<div class="hero-action"><a class="button primary" href="/demo" data-link>Try it with sample data</a><span>It opens a complete sample board.</span></div>`}
         <ul class="plain-facts">
@@ -270,7 +270,7 @@ function textPage(kind: 'privacy' | 'terms' | '404'): string {
     : kind === 'terms'
       ? { title: 'Terms for fair daily play', label: 'Terms', body: `<p>Shapeshift Set is a free daily browser game for personal use.</p><h2>Using the game</h2><p>You may play, share your result, and inspect the open source code. Do not disrupt the site or use it to harm other people.</p><h2>Availability</h2><p>The game is provided as available. Daily boards or features may change. Local progress can be lost when browser storage is cleared.</p><h2>Ownership</h2><p>The code uses the MIT License. Original game art remains subject to the notices in the repository.</p><p>Last updated: September 2, 2026.</p>` }
       : { title: 'This page does not exist', label: '404', body: `<p>The address does not match a Shapeshift Set page.</p><a class="button primary" href="/" data-link>Return to today’s puzzle</a>` };
-  return `${header()}<main id="main" class="text-page" tabindex="-1"><p class="section-label">${content.label}</p><h1>${content.title}</h1><div class="prose">${content.body}</div></main>${footer()}`;
+  return `${header()}<main id="main" class="text-page" tabindex="-1"><p class="section-label">${content.label}</p><h1 tabindex="-1">${content.title}</h1><div class="prose">${content.body}</div></main>${footer()}`;
 }
 
 function resetDialog(): string {
@@ -289,18 +289,22 @@ function route(): void {
     const date = demoMode ? SAMPLE_DATE : utcDate();
     state = demoMode ? createGame(date) : loadRealGame(date);
     document.title = demoMode ? 'Demo — Shapeshift Set' : 'Shapeshift Set — place a daily creature puzzle';
+    setDescription(demoMode ? 'Try a complete Shapeshift Set sample board without saving progress.' : 'Place five shifting creatures on one shared 6x6 daily board. Finish a spatial puzzle in about five minutes.');
     setCanonical(demoMode ? '/demo' : '/');
     app.innerHTML = homePage();
   } else if (path === '/privacy') {
     document.title = 'Privacy — Shapeshift Set';
+    setDescription('Learn what Shapeshift Set stores in your browser and how the game avoids accounts and third-party tracking.');
     setCanonical('/privacy');
     app.innerHTML = textPage('privacy');
   } else if (path === '/terms') {
     document.title = 'Terms — Shapeshift Set';
+    setDescription('Read the terms for playing and sharing Shapeshift Set.');
     setCanonical('/terms');
     app.innerHTML = textPage('terms');
   } else {
     document.title = 'Page not found — Shapeshift Set';
+    setDescription('Return to the current Shapeshift Set daily puzzle.');
     setCanonical('/404');
     app.innerHTML = textPage('404');
   }
@@ -308,6 +312,10 @@ function route(): void {
 
 function setCanonical(path: string): void {
   document.querySelector<HTMLLinkElement>('link[rel="canonical"]')!.href = `https://shapeshift-set.sociobot.in${path}`;
+}
+
+function setDescription(content: string): void {
+  document.querySelector<HTMLMetaElement>('meta[name="description"]')!.content = content;
 }
 
 function renderGame(focusSelector?: string): void {
@@ -459,9 +467,18 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
-window.addEventListener('popstate', route);
-window.addEventListener('online', () => announce('You are back online. The current board stayed in place.', 'good'));
-window.addEventListener('offline', () => announce('You are offline. This loaded board still works.', 'plain'));
+window.addEventListener('popstate', () => {
+  route();
+  document.querySelector<HTMLElement>('h1')?.focus({ preventScroll: true });
+});
+window.addEventListener('online', () => {
+  announce('You are back online. The current board stayed in place.', 'good');
+  renderGame();
+});
+window.addEventListener('offline', () => {
+  announce('You are offline. This loaded board still works.', 'plain');
+  renderGame();
+});
 
 route();
 

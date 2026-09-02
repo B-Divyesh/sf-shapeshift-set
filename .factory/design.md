@@ -69,12 +69,12 @@ are always available. Sound is absent, so no mute control is needed.
 
 ## Motion policy
 
-Paper pieces move from the tray to the board in 220 ms with a small scale-down.
-A successful mutation sends one slow glow along its visible link. The landscape
-drifts by no more than 12 px while the pointer moves. Motion never communicates
-the only version of a state. Under `prefers-reduced-motion`, transitions and
-scene drift stop; success remains visible through color, text, and symbols.
-There is no flashing, shake, or infinite animation.
+Paper pieces settle onto the board in 220 ms with a small scale-down. A
+successful mutation sends one 600 ms glow along its visible link. The landscape
+stays still so it does not compete with the board. Motion never communicates
+the only version of a state. Under `prefers-reduced-motion`, transitions stop;
+success remains visible through color, text, and symbols. There is no flashing,
+shake, or infinite animation.
 
 ## Asset plan and provenance
 

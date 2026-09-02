@@ -1,11 +1,37 @@
 {
   "slug": "shapeshift-set",
   "title": "Shapeshift Set",
-  "artifact_class": "browser-game",
   "summary": "Place five shifting creatures in the right order each day.",
-  "user": "Daily puzzle players who want one bounded five-minute spatial challenge.",
-  "smallest_useful_product": "A shared 6x6 daily board with five rotating polyomino creatures, neighboring mutations, one perfect order, and three score tiers.",
-  "monetization": "free",
-  "success_measure": "At least 40% of players finish with no more than ten undos.",
-  "state": "BUILDING"
+  "territory": "games-creative",
+  "user": "Daily puzzle regulars who enjoy spatial planning but want a bounded, original five-minute challenge rather than an endless block-drop app.",
+  "evidence": [
+    {
+      "url": "https://hn.algolia.com/api/v1/items/49300030",
+      "date": "2026-08-14",
+      "quote_or_summary": "Beeb launches as a daily Blokus-inspired block puzzle, a direct 2026 example of demand for a spatial daily game."
+    },
+    {
+      "url": "https://hn.algolia.com/api/v1/items/49512203",
+      "date": "2026-08-31",
+      "quote_or_summary": "Startup Chess is another new daily puzzle launch, evidence that makers and players continue to seek a one-per-day shared challenge outside conventional word games."
+    },
+    {
+      "url": "https://georgemike.com/beeb",
+      "date": "2026-08-14",
+      "quote_or_summary": "Fetched Beeb product page corroborates an actively maintained daily block-puzzle experience."
+    }
+  ],
+  "recurrence": "Two recent daily-game launches use distinct subject matter but the same scarce-attention format: a finite shared board every day.",
+  "current_workaround": "Play Blokus/Tetris-inspired mobile apps with endless sessions, ads, or opaque scoring.",
+  "incumbents_and_gap": "Beeb supplies block placement and Startup Chess supplies themed daily strategy. The gap is an abstract, compact spatial puzzle with an explicit end and inspectable score.",
+  "smallest_useful_product": "A shared 6x6 daily board: choose the order of five polyomino-like creatures, each mutating one neighboring tile when placed. One perfect solution and a three-tier score make runs comparable. Non-goals: licensed board-game rules, PvP, endless survival, or boosters.",
+  "success_measure": "At least 40% of players complete the daily board without undoing more than ten moves, indicating rules are learnable but not trivial.",
+  "artifact_class": "browser-game",
+  "monetization": "free — no boosters preserves the fairness of a daily shared score.",
+  "constraints": "Use original piece language/art; seed and solver must produce a unique optimal score; retain no identity data by default.",
+  "est_build_effort": "S",
+  "scale": "small (default)",
+  "why_distinct": "A mutation rule creates planning depth and a finite ending, rather than a daily reskin of block placement.",
+  "confidence": 4,
+  "state": "RESEARCHED"
 }

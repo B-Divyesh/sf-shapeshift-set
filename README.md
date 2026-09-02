@@ -1,14 +1,92 @@
 # Shapeshift Set
 
-Live: https://shapeshift-set.sociobot.in — built by the Param Factory (`browser-game`).
+Place five shifting creatures in the right order on one shared daily board.
 
-See `.factory/brief.json` for the researched problem this solves and `.factory/design.md` for the visual system.
+Shapeshift Set is a free, one-player spatial puzzle for daily game regulars.
+Each creature must match a habitat and can change one neighboring tile. The
+only perfect order scores five mutations. A run is designed for 3–5 minutes.
 
-## Develop
+Live site: <https://shapeshift-set.sociobot.in>
 
-```
-npm install
+## Play
+
+Open the daily board and select a creature. Rotate or flip it until its blocks
+match one dotted habitat. Follow the arrows backwards: a target must be on the
+board before the creature that points to it.
+
+The board ends after all five creatures are placed. The result shows a Quiet,
+Shifting, or Radiant tier and an itemized mutation score. “Play this board
+again” clears the run.
+
+Keyboard controls:
+
+- `1`–`5`: select a creature.
+- `Q` and `E`: rotate left and right.
+- `F`: flip the selected creature.
+- Arrow keys: move between board tiles.
+- `Enter` or `Space`: place on the focused habitat.
+
+Pointer and touch controls use the same select, turn, and place sequence.
+
+## Try the isolated demo
+
+Open <https://shapeshift-set.sociobot.in/demo> or run the site locally and open
+`http://localhost:5173/demo`.
+
+The demo loads the fixed August 14, 2026 sample board. It writes nothing to
+local storage and never reads real progress. Use “Reset demo” for a clean run.
+See [.factory/demo.md](.factory/demo.md) for the verifier contract.
+
+## Privacy and offline use
+
+Real daily progress stays in browser local storage under
+`shapeshift-set:daily:<date>`. There are no accounts, analytics events,
+third-party runtime resources, ads, boosters, or payment controls. The service
+worker caches the game shell, so a loaded board can reopen offline.
+
+## Develop and verify
+
+Requirements: Node.js 20 or later and npm.
+
+```sh
+npm ci
 npm run dev
-npm test
-npm run build   # -> dist/
 ```
+
+Run every deterministic, browser, claim, offline, accessibility, and mobile
+check:
+
+```sh
+npm test
+```
+
+Run one documented claim:
+
+```sh
+npm test -- --grep @claim:offline-reload
+```
+
+Build the static deployment:
+
+```sh
+npm run build
+```
+
+The exact deploy output is `dist/`, with `dist/index.html` at its root. Azure
+Static Web Apps routing and security headers are in
+`public/staticwebapp.config.json`.
+
+## Project structure
+
+- `src/core.ts` contains deterministic board transforms, scoring, and recovery.
+- `src/main.ts` contains the game UI, routes, demo mode, and local persistence.
+- `tests/game.spec.ts` contains the full browser and claim suite.
+- `.factory/design.md` records the visual and interaction system.
+- `.factory/claims.json` maps product claims to executable tests.
+- `assets/src/` stores the generated source art and prompt provenance.
+
+## License
+
+Code is available under the [MIT License](LICENSE). The original moon garden
+image was generated for this product; its prompt and review are recorded in
+`assets/src/moon-garden.prompt.json`.
