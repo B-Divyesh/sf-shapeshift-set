@@ -299,6 +299,15 @@ test('the production static host gives unknown routes an actual 404 response', a
   expect(await response.text()).toContain('This page does not exist');
 });
 
+test('an active service worker preserves the host 404 for unknown routes', async ({ page }) => {
+  await page.goto('/demo');
+  await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller))).toBe(true);
+  await page.reload();
+  const response = await page.goto('/missing-page');
+  expect(response?.status()).toBe(404);
+  await expect(page.getByRole('heading', { name: 'This page does not exist' })).toBeVisible();
+});
+
 test('the first desktop and mobile screens keep all plain facts visible with the board in view', async ({ page }) => {
   for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
     await page.setViewportSize(viewport);

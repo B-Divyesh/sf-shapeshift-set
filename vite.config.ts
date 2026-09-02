@@ -25,7 +25,7 @@ function revisionedServiceWorker(): Plugin {
       this.emitFile({
         type: 'asset',
         fileName: 'sw.js',
-        source: `const CACHE = '${cache}';\nconst SHELL = ${JSON.stringify(shell)};\nconst ORIGIN = self.location.origin;\nconst INDEX = new URL('/index.html', ORIGIN).href;\n
+        source: `const CACHE = '${cache}';\nconst SHELL = ${JSON.stringify(shell)};\nconst ORIGIN = self.location.origin;\nconst INDEX = new URL('/index.html', ORIGIN).href;\nconst APP_ROUTES = new Set(['/', '/demo', '/privacy', '/terms']);\n
 self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE);
@@ -52,18 +52,21 @@ self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET' || new URL(event.request.url).origin !== self.location.origin) return;
   event.respondWith((async () => {
     const cache = await caches.open(CACHE);
-    // A navigation can be /demo, /privacy, or a future SPA URL.  Those URLs
-    // are not files in the deploy output, so resolve them to the explicitly
-    // precached app shell before attempting the network.  This is what makes
-    // a brand-new offline navigation deterministic after the first visit.
+    // Valid app routes are not files in the deploy output, so resolve only
+    // those to the explicitly precached shell. Unknown URLs go to the host so
+    // they retain a real 404 response even after this worker controls a page.
     if (event.request.mode === 'navigate') {
-      const shell = await cache.match(INDEX);
-      if (shell) return shell;
-      try {
-        return await fetch(event.request);
-      } catch {
-        throw new Error('Offline navigation shell not cached');
+      const url = new URL(event.request.url);
+      if (APP_ROUTES.has(url.pathname)) {
+        const shell = await cache.match(INDEX);
+        if (shell) return shell;
+        try {
+          return await fetch(event.request);
+        } catch {
+          throw new Error('Offline navigation shell not cached');
+        }
       }
+      return fetch(event.request);
     }
     const cached = await cache.match(event.request, { ignoreSearch: true });
     if (cached) return cached;
