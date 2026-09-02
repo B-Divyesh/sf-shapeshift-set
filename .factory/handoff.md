@@ -56,6 +56,14 @@ The demo is `/demo`, seeded with the fixed August 14, 2026 sample board.
   `lang=en`, one `<h1>`, `<main>`, zero missing image alt attributes, zero
   unlabeled buttons, and zero console errors. Playwright axe integration in
   the full suite found no serious or critical violations.
+- Production deployment `b20b57b3-2a93-470a-b5a5-ceebfbd6d101` succeeded to
+  `https://shapeshift-set.sociobot.in`. The live URL verifier returned HTTP
+  200 with the same title/lang/main/alt/button results and zero console
+  errors. Live `index.html` and `sw.js` byte-match `dist/`.
+- Live offline regression: a dedicated browser context visited `/demo`, waited
+  for a controlling worker and cached `/index.html` (with no cached `/demo`
+  route), went offline, and reopened `/demo`. It rendered the required demo
+  heading and visible board.
 
 ## Known gaps and next steps
 
