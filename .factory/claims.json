@@ -57,10 +57,45 @@
   },
   {
     "id": "keyboard-controls",
-    "claim": "Keyboard controls can select, turn, and place creatures.",
+    "claim": "Keyboard controls can select, rotate, flip, move, and place creatures.",
     "where": "README",
     "test": "npm test -- --grep @claim:keyboard-controls",
-    "sandbox": "fresh /demo context using number, E, F, focus, and Enter keys"
+    "sandbox": "fresh /demo context using number, Q/E, F, Arrow, and Space keys"
+  },
+  {
+    "id": "all-inputs",
+    "claim": "Pointer and touch controls can select, turn, and place creatures.",
+    "where": "README",
+    "test": "npm test -- --grep @claim:all-inputs",
+    "sandbox": "fresh desktop and touch /demo contexts using click and tap controls"
+  },
+  {
+    "id": "undo-last-piece",
+    "claim": "Undo last piece returns the latest creature to the tray and removes its score.",
+    "where": "game controls",
+    "test": "npm test -- --grep @claim:undo-last-piece",
+    "sandbox": "fresh /demo context; place Mote, undo, and inspect score, tray, and mutation score"
+  },
+  {
+    "id": "copy-result",
+    "claim": "Copy result puts the completed score, tier, and seed on the clipboard.",
+    "where": "result screen",
+    "test": "npm test -- --grep @claim:copy-result",
+    "sandbox": "fresh /demo context with clipboard permission; complete a perfect board and read copied text"
+  },
+  {
+    "id": "session-length",
+    "claim": "A session is one five-placement board.",
+    "where": "README",
+    "test": "npm test -- --grep @claim:session-length",
+    "sandbox": "fresh /demo context; verify no result after four placements and a result after five"
+  },
+  {
+    "id": "persistence-recovery",
+    "claim": "When browser storage rejects a write, the game says the current run will not survive reload.",
+    "where": "game status message",
+    "test": "npm test -- --grep @claim:persistence-recovery",
+    "sandbox": "fresh real-play context with Storage.setItem throwing QuotaExceededError; place Mote and reload"
   },
   {
     "id": "same-origin",

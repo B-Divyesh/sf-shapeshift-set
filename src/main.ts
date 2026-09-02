@@ -72,7 +72,7 @@ function saveGame(): void {
   try {
     localStorage.setItem(`${STORAGE_PREFIX}${state.date}`, JSON.stringify(state));
   } catch {
-    statusMessage = 'Progress could not be saved. Keep this tab open to finish the board.';
+    statusMessage = 'Progress could not be saved. This run will not survive reload. Keep this tab open to finish the board.';
     statusTone = 'bad';
   }
 }
@@ -350,10 +350,12 @@ function setDescription(content: string): void {
 function renderGame(focusSelector?: string): void {
   const shell = document.querySelector<HTMLElement>('.game-shell');
   if (!shell) return;
+  // Persist before rendering the next visible state. If storage rejects the
+  // write, the status row must show that failure rather than a success copy.
+  saveGame();
   const replacement = document.createElement('div');
   replacement.innerHTML = game();
   shell.replaceWith(replacement.firstElementChild!);
-  saveGame();
   if (focusSelector) document.querySelector<HTMLElement>(focusSelector)?.focus();
 }
 

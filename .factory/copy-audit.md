@@ -39,6 +39,9 @@ the initial viewport.
 | Your daily progress uses local browser storage. | 7 | None |
 | Demo actions use memory only. | 5 | None |
 | The game loads from this site and can reopen offline after the first visit. | 14 | None |
+| A session is one five-placement board. | 6 | None |
+| Undo last piece returns the latest creature to the tray and removes its score. | 14 | None |
+| Copy result puts the score, tier, and seed on your clipboard. | 11 | None |
 | One shared creature puzzle each day. | 6 | None |
 
 ## Dynamic states
@@ -48,6 +51,7 @@ the initial viewport.
 | Saved progress could not be read. | 6 | None |
 | A fresh board is ready. | 5 | None |
 | Progress could not be saved. | 5 | None |
+| This run will not survive reload. | 7 | None |
 | Keep this tab open to finish the board. | 8 | None |
 | No creature is selected. | 5 | None |
 | Choose one from the tray first. | 6 | None |

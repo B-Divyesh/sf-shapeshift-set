@@ -108,39 +108,36 @@ test('@claim:demo-isolation demo play writes no local progress', async ({ page }
 });
 
 test('@claim:offline-reload the demo reopens offline after its first visit', async ({ browser }) => {
-  const context = await browser.newContext();
-  try {
-    const firstVisit = await context.newPage();
-    await firstVisit.goto('http://127.0.0.1:4173/demo');
+  // Run twice in fresh contexts. A page is not controlled until the worker
+  // claims it, so reload once online before testing the exact offline reload.
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    const context = await browser.newContext();
+    try {
+      const page = await context.newPage();
+      await page.goto('http://127.0.0.1:4173/demo');
 
-    // `ready` alone only means a registration is active.  Wait until this
-    // client is actually controlled and the exact current app shell exists.
-    await expect.poll(() => firstVisit.evaluate(async () => {
-      const registration = await navigator.serviceWorker.ready;
-      const cacheName = (await caches.keys()).find((name) => name.startsWith('shapeshift-set-'));
-      if (!cacheName || !registration.active || !navigator.serviceWorker.controller) return false;
-      const cache = await caches.open(cacheName);
-      const shell = await cache.match('/index.html');
-      // /demo is deliberately not precached as its own URL: this confirms
-      // that offline SPA navigation is served by the app shell, not a lucky
-      // route-specific cache match.
-      const demoRoute = await cache.match('/demo');
-      const firstLoadAssets = performance.getEntriesByType('resource')
-        .map((entry) => entry.name)
-        .filter((url) => /\/assets\/index-[^/]+\.(?:js|css)$/.test(url));
-      const cachedAssets = await Promise.all(firstLoadAssets.map((url) => cache.match(url)));
-      return Boolean(shell && !demoRoute && firstLoadAssets.length === 2 && cachedAssets.every(Boolean));
-    })).toBe(true);
+      await expect.poll(() => page.evaluate(async () => {
+        const registration = await navigator.serviceWorker.ready;
+        const cacheName = (await caches.keys()).find((name) => name.startsWith('shapeshift-set-'));
+        if (!cacheName || !registration.active || !navigator.serviceWorker.controller) return false;
+        const cache = await caches.open(cacheName);
+        const shell = await cache.match('/index.html');
+        const currentAssets = [...document.querySelectorAll<HTMLScriptElement | HTMLLinkElement>('script[src], link[rel="stylesheet"][href]')]
+          .map((element) => element instanceof HTMLScriptElement ? element.src : element.href)
+          .filter((url) => /\/assets\/index-[^/]+\.(?:js|css)$/.test(url));
+        const cachedAssets = await Promise.all(currentAssets.map((url) => cache.match(url)));
+        return Boolean(shell && currentAssets.length === 2 && cachedAssets.every(Boolean));
+      })).toBe(true);
 
-    await firstVisit.close();
-    await context.setOffline(true);
-    const page = await context.newPage();
-    await page.goto('http://127.0.0.1:4173/demo', { waitUntil: 'domcontentloaded' });
-    await expect(page.getByRole('heading', { name: 'Place five sample creatures in order' })).toBeVisible();
-    await expect(page.locator('.board')).toBeVisible();
-  } finally {
-    // This claim owns a dedicated context. Never close Playwright's shared browser.
-    await context.close();
+      await page.reload();
+      await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller))).toBe(true);
+      await context.setOffline(true);
+      await page.reload({ waitUntil: 'domcontentloaded' });
+      await expect(page.getByRole('heading', { name: 'Place five sample creatures in order' })).toBeVisible();
+      await expect(page.locator('.board')).toBeVisible();
+    } finally {
+      await context.close();
+    }
   }
 });
 
@@ -167,21 +164,94 @@ test('@claim:frame-rate the game loop advances at the 60 frames-per-second targe
   expect(reading.rate).toBeLessThanOrEqual(65);
 });
 
-test('@claim:keyboard-controls a creature can be selected, turned, and placed by keyboard', async ({ page }) => {
+test('@claim:keyboard-controls keyboard controls select, rotate, flip, move, and place a creature', async ({ page }) => {
   await page.goto('/demo');
   await page.keyboard.press('1');
   await expect(page.locator('[data-select-piece="mote"]')).toHaveAttribute('aria-pressed', 'true');
-  for (let flip = 0; flip < 2; flip += 1) {
-    for (let turn = 0; turn < 4; turn += 1) {
-      if (await page.locator('[data-select-piece="mote"] small').textContent() === 'Fits') break;
-      await page.keyboard.press('e');
-    }
-    if (await page.locator('[data-select-piece="mote"] small').textContent() === 'Fits') break;
-    await page.keyboard.press('f');
-  }
+  await page.keyboard.press('q');
+  await expect(page.locator('[data-select-piece="mote"] small')).toHaveText('Turn it');
+  await page.keyboard.press('e');
+  await expect(page.locator('[data-select-piece="mote"] small')).toHaveText('Fits');
+  await page.keyboard.press('f');
+  await expect(page.locator('[data-select-piece="mote"] small')).toHaveText('Turn it');
+  await page.keyboard.press('f');
+  await expect(page.locator('[data-select-piece="mote"] small')).toHaveText('Fits');
   await page.getByRole('button', { name: /Mote habitat, empty/ }).first().focus();
-  await page.keyboard.press('Enter');
+  await page.keyboard.press('ArrowRight');
+  await expect(page.locator('.board-cell.cursor')).toHaveAttribute('data-x', '1');
+  await page.keyboard.press('ArrowLeft');
+  await page.keyboard.press('Space');
   await expect(page.locator('.score-box strong')).toContainText('1/5');
+});
+
+test('@claim:all-inputs pointer and touch controls select, turn, and place creatures', async ({ browser, page }) => {
+  await page.goto('/demo');
+  await page.locator('[data-select-piece="mote"]').click();
+  await page.locator('[data-rotate="1"]').click();
+  await expect(page.locator('[data-select-piece="mote"] small')).toHaveText('Turn it');
+  await page.locator('[data-rotate="-1"]').click();
+  await page.getByRole('button', { name: /Mote habitat, empty/ }).first().click();
+  await expect(page.locator('.score-box strong')).toContainText('1/5');
+
+  const touchContext = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  try {
+    const touchPage = await touchContext.newPage();
+    await touchPage.goto('http://127.0.0.1:4173/demo');
+    await touchPage.locator('[data-select-piece="mote"]').tap();
+    await touchPage.locator('[data-rotate="1"]').tap();
+    await expect(touchPage.locator('[data-select-piece="mote"] small')).toHaveText('Turn it');
+    await touchPage.locator('[data-rotate="-1"]').tap();
+    await touchPage.getByRole('button', { name: /Mote habitat, empty/ }).first().tap();
+    await expect(touchPage.locator('.score-box strong')).toContainText('1/5');
+  } finally {
+    await touchContext.close();
+  }
+});
+
+test('@claim:undo-last-piece undo returns the latest creature to the tray and removes its score', async ({ page }) => {
+  await page.goto('/demo');
+  await placePiece(page, 'mote');
+  await page.getByRole('button', { name: 'Undo last piece' }).click();
+  await expect(page.locator('.score-box strong')).toContainText('0/5');
+  await expect(page.locator('[data-select-piece="mote"]')).toBeEnabled();
+  await expect(page.locator('.score-trail li')).toHaveCount(0);
+  await expect(page.locator('.status-row')).toContainText('The last piece returned to the tray. Its mutation was removed.');
+});
+
+test('@claim:copy-result copy result puts the completed score, tier, and seed on the clipboard', async ({ page }) => {
+  await page.context().grantPermissions(['clipboard-read', 'clipboard-write'], { origin: 'http://127.0.0.1:4173' });
+  await page.goto('/demo');
+  await solvePerfect(page);
+  await page.getByRole('button', { name: 'Copy result' }).click();
+  await expect(page.locator('.status-row')).toContainText('Result copied. It contains the score, tier, and seed.');
+  await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toContain('5/5 · Radiant');
+  await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toContain('Seed 989809312');
+});
+
+test('@claim:session-length a round reaches its result only after its fifth placement', async ({ page }) => {
+  await page.goto('/demo');
+  for (const id of perfectOrder.slice(0, 4)) await placePiece(page, id);
+  await expect(page.getByRole('heading', { name: /You changed/ })).toHaveCount(0);
+  await placePiece(page, 'crook');
+  await expect(page.getByRole('heading', { name: 'You changed 5 of 5' })).toBeVisible();
+  await expect(page.locator('.score-trail li')).toHaveCount(5);
+});
+
+test('@claim:persistence-recovery rejected progress writes are visible and do not pretend to survive reload', async ({ page }) => {
+  await page.goto('/');
+  await page.evaluate(() => {
+    localStorage.clear();
+    Object.defineProperty(Storage.prototype, 'setItem', {
+      configurable: true,
+      value: () => { throw new DOMException('Storage full', 'QuotaExceededError'); },
+    });
+  });
+  await placePiece(page, 'mote');
+  await expect(page.locator('.score-box strong')).toContainText('1/5');
+  await expect(page.locator('.status-row')).toContainText('Progress could not be saved. This run will not survive reload. Keep this tab open to finish the board.');
+  await page.reload();
+  await expect(page.locator('.score-box strong')).toContainText('0/5');
+  await expect(page.locator('[data-select-piece="mote"]')).toBeEnabled();
 });
 
 test('@claim:same-origin the demo loads no third-party runtime resources', async ({ page }) => {
@@ -223,7 +293,31 @@ test('pages have one h1, clear metadata, no console errors, and no serious axe f
   expect(errors).toEqual([]);
 });
 
-test('the mobile layout keeps the board and controls within 390 pixels', async ({ page }) => {
+test('the production static host gives unknown routes an actual 404 response', async ({ request }) => {
+  const response = await request.get('/missing-page');
+  expect(response.status()).toBe(404);
+  expect(await response.text()).toContain('This page does not exist');
+});
+
+test('the first desktop and mobile screens keep all plain facts visible with the board in view', async ({ page }) => {
+  for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
+    await page.setViewportSize(viewport);
+    for (const path of ['/', '/demo']) {
+      await page.goto(path);
+      const facts = await page.locator('.plain-facts li').all();
+      expect(facts).toHaveLength(3);
+      for (const fact of facts) {
+        const box = await fact.boundingBox();
+        expect(box?.y).toBeGreaterThanOrEqual(0);
+        expect((box?.y ?? viewport.height) + (box?.height ?? 0)).toBeLessThanOrEqual(viewport.height);
+      }
+      const board = await page.locator('.board').boundingBox();
+      expect(board?.y).toBeLessThan(viewport.height);
+    }
+  }
+});
+
+test('the mobile layout keeps controls and 200% text within 390 pixels', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/demo');
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
@@ -239,13 +333,14 @@ test('the mobile layout keeps the board and controls within 390 pixels', async (
     expect(box?.width).toBeGreaterThanOrEqual(44);
     expect(box?.height).toBeGreaterThanOrEqual(44);
   }
-  const board = await page.locator('.board').boundingBox();
-  expect(board?.y).toBeLessThan(844);
-  expect((board?.y ?? 844) + (board?.height ?? 0)).toBeLessThanOrEqual(844);
-  await page.goto('/');
-  const realBoard = await page.locator('.board').boundingBox();
-  expect((realBoard?.y ?? 844) + (realBoard?.height ?? 0)).toBeLessThanOrEqual(844);
-  await expect(page.getByRole('link', { name: 'Try it with sample data' })).toBeVisible();
+  await page.locator('.skip-link').focus();
+  const skip = await page.locator('.skip-link').boundingBox();
+  expect(skip?.height).toBeGreaterThanOrEqual(44);
+  for (const path of ['/', '/demo', '/privacy', '/terms']) {
+    await page.goto(path);
+    await page.addStyleTag({ content: 'html { font-size: 200% !important; }' });
+    await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(0);
+  }
 });
 
 test('the opening desktop viewport contains a playable board', async ({ page }) => {

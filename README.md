@@ -5,6 +5,7 @@ Place five shifting creatures in the right order on one shared daily board.
 Shapeshift Set is a free, one-player spatial puzzle for daily game regulars.
 Each creature must match a habitat and can change one neighboring tile. The
 only perfect order scores five mutations. A round ends after five placements.
+A session is one five-placement board.
 
 Live site: <https://shapeshift-set.sociobot.in>
 
@@ -27,6 +28,9 @@ Keyboard controls:
 - `Enter` or `Space`: place on the focused habitat.
 
 Pointer and touch controls use the same select, turn, and place sequence.
+Undo last piece returns the latest creature to the tray and removes its score.
+After a completed board, Copy result puts the score, tier, and seed on your
+clipboard.
 
 ## Try the isolated demo
 

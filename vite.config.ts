@@ -25,11 +25,17 @@ function revisionedServiceWorker(): Plugin {
       this.emitFile({
         type: 'asset',
         fileName: 'sw.js',
-        source: `const CACHE = '${cache}';\nconst SHELL = ${JSON.stringify(shell)};\n
+        source: `const CACHE = '${cache}';\nconst SHELL = ${JSON.stringify(shell)};\nconst ORIGIN = self.location.origin;\nconst INDEX = new URL('/index.html', ORIGIN).href;\n
 self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE);
-    await cache.addAll(SHELL);
+    // The HTML names the hashed JS and CSS below. Install completes only
+    // after those exact current shell files have reached Cache Storage.
+    await Promise.all(SHELL.map(async (url) => {
+      const response = await fetch(new Request(new URL(url, ORIGIN).href, { cache: 'reload' }));
+      if (!response.ok) throw new Error('Could not cache ' + url);
+      await cache.put(url, response);
+    }));
     await self.skipWaiting();
   })());
 });
@@ -51,7 +57,7 @@ self.addEventListener('fetch', (event) => {
     // precached app shell before attempting the network.  This is what makes
     // a brand-new offline navigation deterministic after the first visit.
     if (event.request.mode === 'navigate') {
-      const shell = await cache.match('/index.html');
+      const shell = await cache.match(INDEX);
       if (shell) return shell;
       try {
         return await fetch(event.request);
