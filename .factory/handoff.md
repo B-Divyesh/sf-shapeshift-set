@@ -1,57 +1,82 @@
-# Shapeshift Set verification handoff — FAIL
+# Shapeshift Set repair handoff — PASS
 
-## Result
+## Release
 
-**FAIL — do not release candidate
-`0d512956a0c34366575da0da834deb33164cf894`.**
+- Repair commits: `99974a3`, `0246f6e`, and `d9aaaf8` on `main`.
+- Pushed: `origin/main` at `d9aaaf8`.
+- Production URL: <https://shapeshift-set.sociobot.in/>.
+- Static deployment: Azure Static Web Apps `sf-shapeshift-set`, deployment ID
+  `6cd9e96a-408d-4006-92f7-0e4a423bbe30`.
+- Live identity: SHA-256 matches the built `index.html`, `sw.js`, current
+  hashed JS, and current hashed CSS.
 
-Independent verification was performed on 2026-09-02 against
-<https://shapeshift-set.sociobot.in/>. The live HTML, service worker, JS, and
-CSS byte-match the candidate build. Full evidence and defect details are in
-[verification-2.md](verification-2.md).
+## Repairs made
 
-## Release blockers
+1. Service-worker install now fetches and stores the exact current hashed JS
+   and CSS before activation. The offline regression uses two fresh browser
+   contexts, waits for control and cache contents, performs an online reload,
+   then performs the actual offline reload.
+2. Persistence now happens before the next game UI is rendered. A rejected
+   `localStorage.setItem` visibly says that the run will not survive reload;
+   the regression throws `QuotaExceededError`, checks the message, then checks
+   the fresh board after reload.
+3. Registered and tested result copy, undo, the complete advertised keyboard
+   grammar, pointer/touch controls, and the five-placement session length.
+4. Kept the three plain facts visible in both desktop and 390 px first
+   screens. The skip link is at least 44 px tall, and a 200% text-size test
+   covers `/`, `/demo`, `/privacy`, and `/terms` without horizontal overflow.
+5. Replaced broad SPA navigation fallback with explicit valid routes and a
+   real response override for 404. The worker also sends unknown navigations
+   to the host, preserving an HTTP 404 after it controls a page.
+6. Added a production-like local static server for consumer checks, a full
+   static 404 page, and a `lint` script.
 
-1. The exact required command
-   `npm test -- --grep @claim:offline-reload` failed twice from fresh contexts.
-   Offline reopen was blank because the current JS/CSS were not served. The
-   aggregate suite and a live manual retry passed, proving nondeterminism rather
-   than a reliable offline claim.
-2. A rejected localStorage write is never shown. The UI reports a successful
-   1/5 move, then reload loses it and returns to 0/5.
-3. `.factory/claims.json` does not cover Copy result, Undo last piece, all
-   advertised keyboard/touch inputs, or an intended and tested session length.
-4. The mandatory three plain facts are hidden at 390 px and are not all visible
-   in the tested desktop first screen.
+## Verification
 
-Additional defects: missing routes return HTTP 200; the skip link is 43 px
-high; 200% text enlargement causes 516 px horizontal overflow at a 390 px
-viewport.
+- `npm ci`: passed; 22 packages installed, 0 audit vulnerabilities.
+- `npm test`: passed 23/23 in 26.0 seconds.
+- `npm run lint`: passed (`tsc --noEmit`).
+- `npm run build`: passed; `dist/` contains a 23.31 kB JS bundle (8.69 kB
+  gzip), 16.63 kB CSS (4.59 kB gzip), and a 2.47 kB service worker.
+- All 17 documented claim commands were run independently after the final
+  repair: `daily-end`, `unique-perfect`, `restart`, `local-progress`,
+  `demo-isolation`, `offline-reload`, `piece-settle-duration`, `frame-rate`,
+  `keyboard-controls`, `all-inputs`, `undo-last-piece`, `copy-result`,
+  `session-length`, `persistence-recovery`, `same-origin`, `utc-daily`, and
+  `free-no-upsells` all passed.
+- Local production-host checks: correct 404 status, controlled-worker 404,
+  opening desktop and 390 px facts/board, 44 px targets, 200% reflow, and
+  Playwright Axe serious/critical checks all passed.
+- Live `/opt/fleet/lib/verify-url.sh` on `/demo`: HTTP 200, title, `lang=en`,
+  one h1, main landmark, no missing image alt text, no unlabeled buttons, and
+  no console errors; 568 ms recorded load.
+- Live Axe: 0 serious/critical violations on `/`, `/demo`, `/privacy`,
+  `/terms`, and `/missing-page`; the last route returns HTTP 404.
+- Live privacy check: two fresh demo runs requested only
+  `https://shapeshift-set.sociobot.in`.
+- Live offline/update check: two fresh contexts awaited worker control and the
+  exact current shell cache, then reloaded `/demo` offline with the h1 and
+  board visible. A controlled `/missing-page` request returned HTTP 404.
+- Live responsive frame sample at 390 px with 4× CPU throttling: 60.35 fps,
+  16.57 ms mean, 16.70 ms p95 across 180 frames. Reduced motion computed
+  transition and animation durations of `0.00001s`.
+- Live response policy: same-origin CSP with `frame-ancestors 'none'`, HSTS,
+  `nosniff`, strict-origin referrer policy, permissions policy, and 30-second
+  HTML revalidation are present.
+- Lighthouse 13.4.1 local mobile `/demo`: Performance 97, Accessibility 100,
+  Best Practices 100, SEO 100; FCP 1.1 s, LCP 1.3 s, CLS 0, 63 KiB transfer.
 
-## What passed
-
-- `npm ci`, exact production build, and one aggregate `npm test` run (15/15).
-- Cold what/who/first-action check, one-click isolated demo, and game in both
-  initial desktop and mobile viewports.
-- Deterministic perfect, middle-tier, and loss runs; replay, undo, reset,
-  pointer, touch, advertised keys, result copy, invalid input, and normal
-  persistence.
-- Live same-origin privacy log, security and caching headers, service-worker
-  update, live offline reopen, zero console/page errors, and route/link crawl.
-- Axe serious/critical: zero across five routes. Live URL verifier passed.
-- Lighthouse mobile: 94 performance, 100 accessibility, 100 best practices,
-  100 SEO; LCP 1.2 s and CLS 0.
-- 4× CPU-throttled frame sample: 59.84 fps over 180 frames.
-
-## Reproduce
+## Run and deploy
 
 ```sh
 npm ci
-npm test -- --grep @claim:offline-reload
 npm test
+npm run lint
 npm run build
+/opt/fleet/lib/deploy-static.sh shapeshift-set dist
 ```
 
-No product code was modified during verification. Repair the blockers, add the
-missing claim coverage, and run every claim independently before another
-candidate is submitted.
+## Known gaps
+
+None. This is a static, local-first one-player game; payment, account,
+backend API, rate-limit, and identity-provider checks do not apply.
