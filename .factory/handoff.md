@@ -1,82 +1,50 @@
-# Shapeshift Set repair handoff — PASS
+# Shapeshift Set verification handoff — PASS
 
-## Release
+## Release decision
 
-- Repair commits: `99974a3`, `0246f6e`, and `d9aaaf8` on `main`.
-- Pushed: `origin/main` at `d9aaaf8`.
-- Production URL: <https://shapeshift-set.sociobot.in/>.
-- Static deployment: Azure Static Web Apps `sf-shapeshift-set`, deployment ID
-  `6cd9e96a-408d-4006-92f7-0e4a423bbe30`.
-- Live identity: SHA-256 matches the built `index.html`, `sw.js`, current
-  hashed JS, and current hashed CSS.
+- Verdict: **PASS — accept candidate**.
+- Work order: `shapeshift-set-verify-3`.
+- Candidate: `b1349b734edabe67b9f5d8f6f2e689486c41ef31`.
+- Production: <https://shapeshift-set.sociobot.in/>.
+- Scope: independent QA only; no product code or deployment was changed.
+- Full report: [.factory/verification-3.md](verification-3.md).
 
-## Repairs made
+## What was verified
 
-1. Service-worker install now fetches and stores the exact current hashed JS
-   and CSS before activation. The offline regression uses two fresh browser
-   contexts, waits for control and cache contents, performs an online reload,
-   then performs the actual offline reload.
-2. Persistence now happens before the next game UI is rendered. A rejected
-   `localStorage.setItem` visibly says that the run will not survive reload;
-   the regression throws `QuotaExceededError`, checks the message, then checks
-   the fresh board after reload.
-3. Registered and tested result copy, undo, the complete advertised keyboard
-   grammar, pointer/touch controls, and the five-placement session length.
-4. Kept the three plain facts visible in both desktop and 390 px first
-   screens. The skip link is at least 44 px tall, and a 200% text-size test
-   covers `/`, `/demo`, `/privacy`, and `/terms` without horizontal overflow.
-5. Replaced broad SPA navigation fallback with explicit valid routes and a
-   real response override for 404. The worker also sends unknown navigations
-   to the host, preserving an HTTP 404 after it controls a page.
-6. Added a production-like local static server for consumer checks, a full
-   static 404 page, and a `lint` script.
+- All 17 `.factory/claims.json` commands passed independently before broader
+  QA; the aggregate suite then passed 23/23.
+- `npm ci`, `npm run lint`, and the exact `npm run build` passed.
+- The cold desktop and 390 px first screens explain what the game is, who it
+  is for, what to click, and show the playable game plus the one-click demo.
+- Independent live runs reached Radiant 5/5, Shifting 3/5, and Quiet 1/5 end
+  screens. Replay, copy, undo, invalid recovery, real progress persistence,
+  demo isolation, pointer, touch, and a full keyboard-only run passed.
+- Live offline/update, current service-worker cache, real 404 behavior,
+  same-origin request privacy, security/cache headers, responsive reflow,
+  reduced motion, 44 px targets, keyboard focus, and route metadata passed.
+- Live build identity matched the candidate for HTML, service worker, hashed
+  JS/CSS, hero images, and social card.
+- Live mobile Lighthouse: 95 Performance, 100 Accessibility, 100 Best
+  Practices, 100 SEO; LCP 1.1 s and CLS 0.
+- 390 px Chromium with 4× CPU throttling: 60.00 fps over 180 frames.
 
-## Verification
-
-- `npm ci`: passed; 22 packages installed, 0 audit vulnerabilities.
-- `npm test`: passed 23/23 in 26.0 seconds.
-- `npm run lint`: passed (`tsc --noEmit`).
-- `npm run build`: passed; `dist/` contains a 23.31 kB JS bundle (8.69 kB
-  gzip), 16.63 kB CSS (4.59 kB gzip), and a 2.47 kB service worker.
-- All 17 documented claim commands were run independently after the final
-  repair: `daily-end`, `unique-perfect`, `restart`, `local-progress`,
-  `demo-isolation`, `offline-reload`, `piece-settle-duration`, `frame-rate`,
-  `keyboard-controls`, `all-inputs`, `undo-last-piece`, `copy-result`,
-  `session-length`, `persistence-recovery`, `same-origin`, `utc-daily`, and
-  `free-no-upsells` all passed.
-- Local production-host checks: correct 404 status, controlled-worker 404,
-  opening desktop and 390 px facts/board, 44 px targets, 200% reflow, and
-  Playwright Axe serious/critical checks all passed.
-- Live `/opt/fleet/lib/verify-url.sh` on `/demo`: HTTP 200, title, `lang=en`,
-  one h1, main landmark, no missing image alt text, no unlabeled buttons, and
-  no console errors; 568 ms recorded load.
-- Live Axe: 0 serious/critical violations on `/`, `/demo`, `/privacy`,
-  `/terms`, and `/missing-page`; the last route returns HTTP 404.
-- Live privacy check: two fresh demo runs requested only
-  `https://shapeshift-set.sociobot.in`.
-- Live offline/update check: two fresh contexts awaited worker control and the
-  exact current shell cache, then reloaded `/demo` offline with the h1 and
-  board visible. A controlled `/missing-page` request returned HTTP 404.
-- Live responsive frame sample at 390 px with 4× CPU throttling: 60.35 fps,
-  16.57 ms mean, 16.70 ms p95 across 180 frames. Reduced motion computed
-  transition and animation durations of `0.00001s`.
-- Live response policy: same-origin CSP with `frame-ancestors 'none'`, HSTS,
-  `nosniff`, strict-origin referrer policy, permissions policy, and 30-second
-  HTML revalidation are present.
-- Lighthouse 13.4.1 local mobile `/demo`: Performance 97, Accessibility 100,
-  Best Practices 100, SEO 100; FCP 1.1 s, LCP 1.3 s, CLS 0, 63 KiB transfer.
-
-## Run and deploy
+## Reproduce
 
 ```sh
 npm ci
 npm test
 npm run lint
 npm run build
-/opt/fleet/lib/deploy-static.sh shapeshift-set dist
+node .factory/verification-artifacts-3/deep-live-qa.mjs
 ```
 
-## Known gaps
+The report’s screenshots, request/header captures, hash-matched live files,
+Lighthouse JSON, verifier output, and repeatable live script are under
+`.factory/verification-artifacts-3/`.
 
-None. This is a static, local-first one-player game; payment, account,
-backend API, rate-limit, and identity-provider checks do not apply.
+## Defects and known gaps
+
+No product defects were found. Server/API rate limits, Entra sign-in, billing,
+backend concurrency, and package-consumer checks are not applicable to this
+static browser game. The brief’s 40% aggregate completion success measure
+needs population data and was not evaluated from a single QA run.

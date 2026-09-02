@@ -1,0 +1,61 @@
+{
+  "profile": "mobile",
+  "url": "https://shapeshift-set.sociobot.in/",
+  "status": 200,
+  "headers": {
+    "cache-control": "public, must-revalidate, max-age=30",
+    "content-encoding": "br",
+    "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'",
+    "content-type": "text/html",
+    "date": "Wed, 02 Sep 2026 05:32:39 GMT",
+    "etag": "\"69362899\"",
+    "last-modified": "Wed, 02 Sep 2026 05:17:04 GMT",
+    "permissions-policy": "camera=(), microphone=(), geolocation=()",
+    "referrer-policy": "strict-origin-when-cross-origin",
+    "strict-transport-security": "max-age=10886400; includeSubDomains; preload",
+    "vary": "Accept-Encoding",
+    "x-content-type-options": "nosniff",
+    "x-dns-prefetch-control": "off",
+    "x-xss-protection": "1; mode=block"
+  },
+  "fold": {
+    "title": "Shapeshift Set — place a daily creature puzzle",
+    "lang": "en",
+    "h1": [
+      "Place five creatures in the right order"
+    ],
+    "mains": 1,
+    "visibleText": [
+      "Shapeshift Set",
+      "Play",
+      "Demo",
+      "Privacy",
+      "Place five creatures in the right order",
+      "For daily puzzle players who want one shared spatial challenge that ends after five creatures.",
+      "Try it with sample data",
+      "Free to play.",
+      "Progress stays in this browser.",
+      "A new shared board appears each UTC day.",
+      "Daily board · September 2, 2026",
+      "Match the habitats",
+      "Place an arrow’s target first. Then the creature changes that neighbor and scores one."
+    ],
+    "demoActions": [
+      {
+        "text": "Try it with sample data",
+        "tag": "A",
+        "href": "/demo"
+      }
+    ],
+    "scrollWidth": 390,
+    "innerWidth": 390
+  },
+  "requests": [
+    "https://shapeshift-set.sociobot.in/",
+    "https://shapeshift-set.sociobot.in/assets/index-IUDNXAQ1.js",
+    "https://shapeshift-set.sociobot.in/assets/index-cdAnxJgX.css",
+    "https://shapeshift-set.sociobot.in/assets/moon-garden-720.webp"
+  ],
+  "consoleMessages": [],
+  "pageErrors": []
+}

@@ -1,0 +1,143 @@
+{
+  "checks": {
+    "perfectRunCopyRestart": "PASS",
+    "invalidRecoveryAndLoss": "PASS",
+    "middleTierBoundary": "PASS",
+    "keyboardOnlyEnd": "PASS",
+    "touchPersistenceDialog": "PASS",
+    "accessibilityResponsiveRouting": "PASS",
+    "serviceWorkerOfflineUpdate": "PASS",
+    "mobileFrameRate": "PASS"
+  },
+  "observations": {
+    "fullDemoRequests": [
+      "https://shapeshift-set.sociobot.in/demo",
+      "https://shapeshift-set.sociobot.in/assets/index-IUDNXAQ1.js",
+      "https://shapeshift-set.sociobot.in/assets/index-cdAnxJgX.css",
+      "https://shapeshift-set.sociobot.in/assets/moon-garden-1200.webp"
+    ],
+    "fullDemoOrigins": [
+      "https://shapeshift-set.sociobot.in"
+    ],
+    "fullDemoErrors": [],
+    "keyboardTabCounts": [
+      15,
+      28,
+      18,
+      34,
+      34
+    ],
+    "realStorageKeys": [
+      "shapeshift-set:daily:2026-09-02"
+    ],
+    "routes": [
+      {
+        "path": "/",
+        "status": 200,
+        "serious": [],
+        "structure": {
+          "title": "Shapeshift Set — place a daily creature puzzle",
+          "lang": "en",
+          "h1": 1,
+          "main": 1,
+          "missingAlt": 0,
+          "overflow": 0
+        }
+      },
+      {
+        "path": "/demo",
+        "status": 200,
+        "serious": [],
+        "structure": {
+          "title": "Demo — Shapeshift Set",
+          "lang": "en",
+          "h1": 1,
+          "main": 1,
+          "missingAlt": 0,
+          "overflow": 0
+        }
+      },
+      {
+        "path": "/privacy",
+        "status": 200,
+        "serious": [],
+        "structure": {
+          "title": "Privacy — Shapeshift Set",
+          "lang": "en",
+          "h1": 1,
+          "main": 1,
+          "missingAlt": 0,
+          "overflow": 0
+        }
+      },
+      {
+        "path": "/terms",
+        "status": 200,
+        "serious": [],
+        "structure": {
+          "title": "Terms — Shapeshift Set",
+          "lang": "en",
+          "h1": 1,
+          "main": 1,
+          "missingAlt": 0,
+          "overflow": 0
+        }
+      }
+    ],
+    "targets": {
+      "count": 56,
+      "undersized": []
+    },
+    "reducedMotion": {
+      "animation": "1e-05s",
+      "transition": "1e-05s"
+    },
+    "focusStyle": {
+      "element": "skip-link",
+      "focusVisible": true,
+      "outlineColor": "rgb(185, 214, 107)",
+      "outlineStyle": "solid",
+      "outlineWidth": "3px"
+    },
+    "internalLinks": [
+      {
+        "href": "https://shapeshift-set.sociobot.in/",
+        "status": 200
+      },
+      {
+        "href": "https://shapeshift-set.sociobot.in/demo",
+        "status": 200
+      },
+      {
+        "href": "https://shapeshift-set.sociobot.in/privacy",
+        "status": 200
+      },
+      {
+        "href": "https://shapeshift-set.sociobot.in/terms",
+        "status": 200
+      }
+    ],
+    "serviceWorker": {
+      "active": true,
+      "controlled": true,
+      "cacheNames": [
+        "shapeshift-set-1uj8een"
+      ],
+      "assets": [
+        "https://shapeshift-set.sociobot.in/assets/index-IUDNXAQ1.js",
+        "https://shapeshift-set.sociobot.in/assets/index-cdAnxJgX.css"
+      ],
+      "cached": [
+        true,
+        true
+      ]
+    },
+    "mobileFrameRate": {
+      "frames": 180,
+      "elapsed": 2999.8,
+      "fps": 60.00400026668444,
+      "meanMs": 16.665555555555557,
+      "p95Ms": 16.799999999999727
+    }
+  }
+}
