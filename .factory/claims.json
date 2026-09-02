@@ -1,0 +1,72 @@
+[
+  {
+    "id": "daily-end",
+    "claim": "Each daily board has five creatures and reaches a scored end screen.",
+    "where": "game, README",
+    "test": "npm test -- --grep @claim:daily-end",
+    "sandbox": "fresh browser context at /demo; complete the five-piece sample run"
+  },
+  {
+    "id": "unique-perfect",
+    "claim": "Each board has one perfect five-mutation order.",
+    "where": "result screen, README",
+    "test": "npm test -- --grep @claim:unique-perfect",
+    "sandbox": "enumerate all 120 placement orders across four dated transforms"
+  },
+  {
+    "id": "restart",
+    "claim": "Play this board again resets all pieces and the score.",
+    "where": "result screen",
+    "test": "npm test -- --grep @claim:restart",
+    "sandbox": "finish /demo, replay, and assert zero score and an empty mutation trail"
+  },
+  {
+    "id": "local-progress",
+    "claim": "Progress stays in this browser and survives reloads.",
+    "where": "landing facts, privacy, README",
+    "test": "npm test -- --grep @claim:local-progress",
+    "sandbox": "fresh browser storage; place one real piece, reload, and inspect state"
+  },
+  {
+    "id": "demo-isolation",
+    "claim": "Demo play writes no local progress.",
+    "where": "demo banner, privacy",
+    "test": "npm test -- --grep @claim:demo-isolation",
+    "sandbox": "fresh /demo context; play one move, assert empty localStorage, then enter real play"
+  },
+  {
+    "id": "offline-reload",
+    "claim": "The game can reopen offline after the first visit.",
+    "where": "scope and privacy section, README",
+    "test": "npm test -- --grep @claim:offline-reload",
+    "sandbox": "dedicated browser context at /demo; wait for service worker, go offline, and reload"
+  },
+  {
+    "id": "keyboard-controls",
+    "claim": "Keyboard controls can select, turn, and place creatures.",
+    "where": "README",
+    "test": "npm test -- --grep @claim:keyboard-controls",
+    "sandbox": "fresh /demo context using number, E, F, focus, and Enter keys"
+  },
+  {
+    "id": "same-origin",
+    "claim": "The game loads no third-party runtime resources.",
+    "where": "privacy, README",
+    "test": "npm test -- --grep @claim:same-origin",
+    "sandbox": "record every request during a /demo move and assert the product origin"
+  },
+  {
+    "id": "utc-daily",
+    "claim": "A new shared board appears each UTC day.",
+    "where": "landing facts, README",
+    "test": "npm test -- --grep @claim:utc-daily",
+    "sandbox": "construct two same-date boards and one next-date board, then compare seeds and geometry"
+  },
+  {
+    "id": "free-no-upsells",
+    "claim": "The complete game is free and has no accounts, ads, boosters, or purchase controls.",
+    "where": "landing facts, scope and privacy section, README",
+    "test": "npm test -- --grep @claim:free-no-upsells",
+    "sandbox": "finish /demo and inspect the complete playable flow for account or payment controls"
+  }
+]
