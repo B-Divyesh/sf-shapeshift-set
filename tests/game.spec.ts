@@ -15,6 +15,20 @@ import {
 
 const perfectOrder: PieceId[] = dailyOrder(SAMPLE_DATE);
 
+function contrastRatio(foreground: string, background: string): number {
+  const channels = (color: string): number[] => {
+    const values = color.match(/[\d.]+/g)?.slice(0, 3).map(Number);
+    if (!values || values.length !== 3) throw new Error(`Expected an RGB color, received ${color}`);
+    return values;
+  };
+  const luminance = (color: string): number => channels(color)
+    .map((channel) => channel / 255)
+    .map((channel) => channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4)
+    .reduce((total, channel, index) => total + channel * [0.2126, 0.7152, 0.0722][index], 0);
+  const [first, second] = [luminance(foreground), luminance(background)].sort((a, b) => b - a);
+  return (first + 0.05) / (second + 0.05);
+}
+
 async function orientPiece(page: Page, id: PieceId): Promise<void> {
   await page.locator(`[data-select-piece="${id}"]`).click();
   for (let flip = 0; flip < 2; flip += 1) {
@@ -76,6 +90,26 @@ test('@claim:daily-end a full run reaches the scored end screen', async ({ page 
   await expect(page.getByRole('heading', { name: 'You changed 5 of 5' })).toBeVisible();
   await expect(page.getByText('All five neighbors changed. You found the only perfect order.')).toBeVisible();
   await expect(page.locator('.score-trail li.success')).toHaveCount(5);
+});
+
+test('@claim:board-size each sample board renders six rows, six columns, and 36 targets', async ({ page }) => {
+  await page.goto('/demo');
+  const board = await page.locator('.board').evaluate((element) => {
+    const cells = [...element.querySelectorAll<HTMLElement>('[data-board-cell]')];
+    const positions = cells.map((cell) => {
+      const box = cell.getBoundingClientRect();
+      return {
+        x: Math.round(box.left * 100) / 100,
+        y: Math.round(box.top * 100) / 100,
+      };
+    });
+    return {
+      cells: cells.length,
+      columns: new Set(positions.map((position) => position.x)).size,
+      rows: new Set(positions.map((position) => position.y)).size,
+    };
+  });
+  expect(board).toEqual({ cells: 36, columns: 6, rows: 6 });
 });
 
 test('the ?demo=1 entry point opens the same isolated sample board', async ({ page }) => {
@@ -445,6 +479,62 @@ test('the mobile layout keeps controls and 200% text within 390 pixels', async (
     await page.goto(path);
     await page.addStyleTag({ content: 'html { font-size: 200% !important; }' });
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(0);
+  }
+});
+
+test('responsive play keeps board targets large and game controls reachable', async ({ page }) => {
+  for (const width of [320, 881, 900, 1024, 1100, 1279, 1280]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto('/demo');
+    const layout = await page.evaluate(() => {
+      const viewport = document.documentElement.clientWidth;
+      const controls = [...document.querySelectorAll<HTMLElement>('.game-tools button')].map((control) => {
+        const box = control.getBoundingClientRect();
+        return { left: box.left, right: box.right };
+      });
+      const cells = [...document.querySelectorAll<HTMLElement>('.board-cell')].map((cell) => {
+        const box = cell.getBoundingClientRect();
+        return { width: box.width, height: box.height };
+      });
+      return {
+        overflow: document.documentElement.scrollWidth - viewport,
+        viewport,
+        controls,
+        cells,
+      };
+    });
+    expect(layout.overflow).toBeLessThanOrEqual(0);
+    expect(layout.cells).toHaveLength(36);
+    for (const cell of layout.cells) {
+      expect(cell.width).toBeGreaterThanOrEqual(44);
+      expect(cell.height).toBeGreaterThanOrEqual(44);
+    }
+    for (const control of layout.controls) {
+      expect(control.left).toBeGreaterThanOrEqual(0);
+      expect(control.right).toBeLessThanOrEqual(layout.viewport);
+    }
+  }
+});
+
+test('demo actions show a contrasting visible keyboard focus indicator', async ({ page }) => {
+  await page.goto('/demo');
+  for (const selector of ['[data-demo-reset]', '.demo-banner a']) {
+    const indicator = await page.locator(selector).evaluate((control) => {
+      (control as HTMLElement).focus();
+      const style = getComputedStyle(control);
+      const banner = control.closest<HTMLElement>('.demo-banner')!;
+      return {
+        focused: control.matches(':focus-visible'),
+        outlineColor: style.outlineColor,
+        outlineStyle: style.outlineStyle,
+        outlineWidth: style.outlineWidth,
+        backgroundColor: getComputedStyle(banner).backgroundColor,
+      };
+    });
+    expect(indicator.focused).toBe(true);
+    expect(indicator.outlineStyle).toBe('solid');
+    expect(Number.parseFloat(indicator.outlineWidth)).toBeGreaterThanOrEqual(2);
+    expect(contrastRatio(indicator.outlineColor, indicator.backgroundColor)).toBeGreaterThanOrEqual(3);
   }
 });
 

@@ -216,6 +216,7 @@ h3 { letter-spacing: -.018em; }
 }
 .demo-banner div { display: flex; gap: 8px; align-items: center; }
 .demo-banner button, .demo-banner a { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 0 8px; border: 0; background: transparent; color: #17200a; font-weight: 800; text-decoration: underline; cursor: pointer; }
+.demo-banner button:focus-visible, .demo-banner a:focus-visible { outline-color: var(--night); outline-offset: 2px; }
 
 .game-shell {
   position: relative;
@@ -402,9 +403,12 @@ h3 { letter-spacing: -.018em; }
   to { opacity: 1; stroke-dashoffset: 0; }
 }
 
-@media (max-width: 880px) {
+@media (max-width: 1279px) {
   .opening { grid-template-columns: 1fr; }
   .opening-copy { max-width: 650px; }
+}
+
+@media (max-width: 880px) {
   .landscape { min-height: 290px; }
   .hero-art::after { background: linear-gradient(180deg, var(--ink), transparent 35%); }
   .game-layout { grid-template-columns: 1fr; }
@@ -470,6 +474,11 @@ h3 { letter-spacing: -.018em; }
   .site-header nav { flex-basis: 152px; }
   .site-header nav a { min-width: 44px; }
   .wordmark span:last-child, .site-header nav a, .hero-summary, .game-rule, .board-key, .status-row, .limits-copy, .prose { overflow-wrap: anywhere; }
+}
+
+@media (max-width: 340px) {
+  main { width: 100%; }
+  .opening .game-shell { padding-inline: 8px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

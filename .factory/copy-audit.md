@@ -9,6 +9,7 @@ banned marketing word.
 | Copy | Words | Flag |
 | --- | ---: | --- |
 | Place five creatures in the right order | 7 | None |
+| One shared 6×6 board each day | 6 | Covered by `board-size` |
 | For daily puzzle players who want one shared spatial challenge that ends after five creatures. | 15 | None |
 | Opens a complete sample board. | 5 | None; visible at 390 px |
 | Free to play. | 3 | None |

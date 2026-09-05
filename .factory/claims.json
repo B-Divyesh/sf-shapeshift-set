@@ -7,6 +7,13 @@
     "sandbox": "fresh browser context at /demo; complete the five-piece sample run"
   },
   {
+    "id": "board-size",
+    "claim": "Each daily board is 6 by 6.",
+    "where": "opening label, game board, README",
+    "test": "npm test -- --grep @claim:board-size",
+    "sandbox": "fresh browser context at /demo; inspect the rendered sample board for six rows, six columns, and 36 targets"
+  },
+  {
     "id": "unique-perfect",
     "claim": "Each board has one perfect five-change order, and consecutive daily answers differ.",
     "where": "result screen, README",

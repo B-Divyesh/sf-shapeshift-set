@@ -1,6 +1,6 @@
 # Shapeshift Set
 
-Place five shifting creatures in the right order on one shared daily board.
+Place five shifting creatures in the right order on one shared 6×6 daily board.
 
 Shapeshift Set is a free, one-player spatial puzzle for daily game regulars.
 Each creature must match a habitat and can change one neighboring creature.
