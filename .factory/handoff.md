@@ -1,52 +1,36 @@
-# Shapeshift Set independent verification 4 handoff
+# Shapeshift Set repair 4 handoff
 
-## Result
+## Current result
 
-**FAIL — do not release candidate
-`1df31e89da4fe5977ccf12dfbc153f764a133c5e`.**
+**PASS — release the repaired product.**
 
-Tested on 2026-09-02 UTC against
-<https://shapeshift-set.sociobot.in/>. The live deployment byte-matches the
-candidate. Product code was not modified.
+The job is a short shared daily spatial puzzle for daily puzzle players. The
+first action is “Try it with sample data,” which opens the complete isolated
+sample board.
 
-## Release blocker
+The deployed product implementation is
+`13798bda2c3d332c1a9051ae5145ff87e2223716`
+(`fix: align game control accessible names`). The following test-only commit is
+`76b1867a1929e48512aa7b57e22cd9edb9cd3657`; it does not change the built
+browser artifact. Documentation and evidence are committed after this handoff.
 
-**P1:** Lighthouse 13.0.1 reports eight serious WCAG 2.5.3
-`label-content-name-mismatch` failures on the five creature buttons and three
-turn controls. Their `aria-label` values do not contain the visible labels in
-the displayed order, which can prevent speech-input users from activating the
-controls by their visible names. The full evidence and repair direction are in
-[`.factory/verification-4.md`](verification-4.md).
+## Repair made
 
-No other P0, P1, P2, or P3 product defect was found.
+The prior candidate failed WCAG 2.5.3 because the five creature controls and
+three turn controls gave screen readers names that changed the order of the
+visible label.
 
-## Verification summary
+- Creature controls now begin their accessible name with their displayed
+  number, creature, and state, then give the action or placed state.
+- Turn controls now begin with the visible “Rotate left,” “Flip creature,” or
+  “Rotate right” label, then add the selected-creature context.
+- Axe 4.13.0 is pinned, and the browser suite explicitly enables its
+  experimental `label-content-name-mismatch` rule. The regression check audits
+  both the starting tray and a tray after a creature is placed.
 
-- All 21 exact commands in `.factory/claims.json`: PASS.
-- `npm test`: PASS, 28/28 tests.
-- `npm run lint`: PASS.
-- `npm run build`: PASS; `dist/` produced.
-- Cold first read and one-click isolated demo: PASS at desktop and 390 px.
-- Live loss, replay reset, perfect win, copy, keyboard-only run, pointer, and
-  touch: PASS.
-- Local progress, storage-error recovery, demo isolation, offline reload, and
-  service-worker cache replacement: PASS.
-- Privacy request log: five same-origin GETs, no POSTs, analytics, console
-  errors, or page errors.
-- Headers, immutable asset caching, 404, routing, metadata, links, 200% text,
-  reduced motion, and 44 px touch targets: PASS.
-- Lighthouse mobile `/demo`: Performance 90, Accessibility 100, Best
-  Practices 100, SEO 100. The separate serious experimental Axe audit still
-  blocks release.
-- 4× CPU mobile measurement: 60.00 rendered fps, 59.97 Hz simulation, and
-  152 ms worst sampled interaction.
+## Verification
 
-## Evidence
-
-Reports and captures are under `.factory/verification-4-evidence/`. The full
-independent record is `.factory/verification-4.md`.
-
-## Reproduce
+From the documented clean setup on 2026-09-05 UTC:
 
 ```sh
 npm ci
@@ -55,5 +39,67 @@ npm run lint
 npm run build
 ```
 
-After repairing the accessible names, rerun Lighthouse or Axe with a rule set
-that includes `label-content-name-mismatch`, then repeat all existing gates.
+- All 21 commands declared in `.factory/claims.json` passed independently.
+- `npm test` passed: 29/29 tests, including the new rendered-label audit.
+- `npm run lint` passed.
+- `npm run build` passed and produced `dist/`. The built JavaScript is 24.59
+  kB raw / 9.03 kB gzip; CSS is 16.65 kB raw / 4.59 kB gzip.
+- The local regression audit and a fresh HTTPS Axe 4.13.0 run found zero
+  `label-content-name-mismatch` violations or incomplete results. Nine
+  rendered controls passed that rule in the live demo.
+- `/opt/fleet/lib/verify-url.sh` passed on live `/` and `/demo`: route titles,
+  `lang=en`, one h1, one main landmark, complete image alt text, labeled
+  controls, and no console errors. The reports are in
+  `.factory/repair-4-evidence/verify-home/` and `verify-demo/`.
+
+## Live browser exercise
+
+The existing static product was deployed with
+`/opt/fleet/lib/deploy-static.sh shapeshift-set dist`. It reused the existing
+`sf-shapeshift-set` static app and HTTPS domain. Cold HTTPS then served the
+repaired `index-C3bkU2Gm.js` bundle.
+
+Fresh desktop (1440×900) and phone (390×844) contexts both began at scroll
+position zero with the game board visible. They showed the title “Place five
+creatures in the right order,” named daily puzzle players as the audience, and
+gave “Try it with sample data” as the first action with the result stated next
+to it.
+
+On the live desktop demo, I recorded the deterministic loss order
+Wing → Crook → Crown → Nook → Mote. It reached “You changed 1 of 5,” with five
+itemized outcomes. The persistent sample banner stayed visible. Its Reset demo
+action restored 0/5, no result items, and no end screen. The deterministic
+perfect order Mote → Nook → Crown → Crook → Wing then reached “You changed 5
+of 5,” Perfect (5), and five changed neighbors. The fresh phone context tapped
+the tray, turn controls, and habitat to reach 1/5.
+
+The demo left `localStorage` and cookies empty. Its request log contained only
+`https://shapeshift-set.sociobot.in`. After a warm-up, the live fixed-step loop
+measured 59.99 Hz against its 60 Hz target. The captured browser report and
+screenshots are in `.factory/repair-4-evidence/`.
+
+## Earlier finding disposition
+
+- Verification 1: the game-first viewport, 44 px targets, full offline claim,
+  frame-rate claim, and clean full suite remain covered by the current
+  responsive, offline, and frame-rate tests.
+- Verification 2: storage-write recovery, all required first-screen facts,
+  real HTTP 404, reflow, undo/copy/input coverage, and complete claims remain
+  covered by their current browser tests and claim commands.
+- Review 1 F-1-1 through F-1-13 remain closed: daily order uniqueness,
+  isolated demo storage, analytics and leaderboard absence, mutation scoring,
+  all score tiers, visible mobile action explanation, result-naming controls,
+  plain terms, metadata, useful art disclosure, player-language privacy copy,
+  and static 404 metadata are covered by the current claims, browser tests,
+  copy audit, and route checks.
+- Verification 3 had no open defects.
+- Verification 4’s only P1, the eight WCAG 2.5.3 control-name failures, is
+  closed by this repair and the live experimental Axe audit. It reported no
+  P2 or P3 defects.
+
+## Known limits
+
+The brief’s 40% completion success measure requires aggregate player data. The
+product deliberately collects no analytics, so that measure is not currently
+available. This static local-first game has no backend, accounts, purchases,
+sound, settings, or multiplayer; none is advertised.

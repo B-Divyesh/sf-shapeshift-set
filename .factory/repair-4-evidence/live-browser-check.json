@@ -1,0 +1,64 @@
+{
+  "desktop": {
+    "firstRead": {
+      "title": "Shapeshift Set — order five creatures daily",
+      "scrollY": 0,
+      "h1": "Place five creatures in the right order",
+      "audience": "For daily puzzle players who want one shared spatial challenge that ends after five creatures.",
+      "firstAction": "Try it with sample data",
+      "actionResult": "Opens a complete sample board.",
+      "boardTop": 316.453125,
+      "boardBottom": 629.53125
+    },
+    "demo": {
+      "banner": "Demo — sample board, nothing is saved\nReset demo\nStart for real",
+      "reset": true,
+      "startForReal": true
+    },
+    "labelInName": {
+      "violations": 0,
+      "incomplete": 0,
+      "passes": 9
+    },
+    "loss": {
+      "heading": "You changed 1 of 5",
+      "tier": "TRY AGAIN (0–2)",
+      "results": 5
+    },
+    "reset": {
+      "score": "0/5",
+      "results": 0,
+      "resultScreen": 0
+    },
+    "win": {
+      "heading": "You changed 5 of 5",
+      "tier": "PERFECT (5)",
+      "changed": 5,
+      "bannerStillVisible": true
+    },
+    "frameRate": 59.988002399527545,
+    "privacy": {
+      "origins": [
+        "https://shapeshift-set.sociobot.in"
+      ],
+      "localStorage": [],
+      "cookies": []
+    }
+  },
+  "mobile": {
+    "firstRead": {
+      "title": "Shapeshift Set — order five creatures daily",
+      "scrollY": 0,
+      "h1": "Place five creatures in the right order",
+      "audience": "For daily puzzle players who want one shared spatial challenge that ends after five creatures.",
+      "firstAction": "Try it with sample data",
+      "actionResult": "Opens a complete sample board.",
+      "boardTop": 573.15625
+    },
+    "touch": {
+      "score": "1/5",
+      "demoBanner": "Demo — sample board, nothing is saved\nReset demo\nStart for real",
+      "localStorage": []
+    }
+  }
+}
