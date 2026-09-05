@@ -358,8 +358,11 @@ test('@claim:free-no-upsells the complete game has no payment, ad, account, or b
 
 test('game controls keep their visible labels in their accessible names', async ({ page }) => {
   await page.goto('/demo');
-  const results = await new AxeBuilder({ page }).withRules('label-content-name-mismatch').analyze();
-  expect(results.violations).toEqual([]);
+  for (const phase of ['starting tray', 'placed creature']) {
+    if (phase === 'placed creature') await placePiece(page, 'mote');
+    const results = await new AxeBuilder({ page }).withRules('label-content-name-mismatch').analyze();
+    expect(results.violations).toEqual([]);
+  }
 });
 
 test('pages have one h1, clear metadata, no console errors, and no serious axe findings', async ({ page }) => {
