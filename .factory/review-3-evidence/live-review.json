@@ -1,0 +1,235 @@
+{
+  "base": "https://shapeshift-set.sociobot.in",
+  "checkedAt": "2026-09-05T21:49:46.841Z",
+  "desktop": {
+    "firstScreen": {
+      "title": "Shapeshift Set — order five creatures daily",
+      "h1": "Place five creatures in the right order",
+      "audience": "For daily puzzle players who want one shared spatial challenge that ends after five creatures.",
+      "action": "Try it with sample data",
+      "actionNote": "Opens a complete sample board.",
+      "facts": [
+        "Free to play.",
+        "Progress stays in this browser.",
+        "A new shared board appears each UTC day."
+      ],
+      "actionVisible": true,
+      "boardVisible": true,
+      "scrollY": 0
+    },
+    "loss": {
+      "score": "1/5",
+      "tier": "Try again (0–2)",
+      "items": 5
+    },
+    "win": {
+      "score": "5/5",
+      "tier": "Perfect (5)",
+      "items": 5,
+      "banner": "\n    Demo — sample board, nothing is saved\n    Reset demoStart for real\n  ",
+      "realDataUnchanged": true
+    },
+    "recovery": {
+      "invalidMessage": "No creature is selected. Choose one from the tray first.",
+      "openGroundMessage": "That tile has no habitat. Choose a dotted shape.",
+      "orientationMessage": "The blocks do not match yet. Rotate or flip the creature, then try again.",
+      "wrongHabitatMessage": "That creature has a different shape. Choose its matching habitat.",
+      "occupiedCellDisabled": true,
+      "replayReset": true,
+      "undoReset": true,
+      "demoReset": true
+    }
+  },
+  "phone": {
+    "firstScreen": {
+      "h1": "Place five creatures in the right order",
+      "audience": "For daily puzzle players who want one shared spatial challenge that ends after five creatures.",
+      "action": "Try it with sample data",
+      "actionVisible": true,
+      "boardVisible": true,
+      "overflow": 0,
+      "scrollY": 0
+    },
+    "touch": {
+      "score": "1/5",
+      "banner": "\n    Demo — sample board, nothing is saved\n    Reset demoStart for real\n  "
+    }
+  },
+  "keyboard": {
+    "score": "5/5",
+    "result": "Perfect (5)",
+    "controls": "number, Q, E, F, arrows, Space, Enter"
+  },
+  "routes": {
+    "/": {
+      "status": 200,
+      "title": "Shapeshift Set — order five creatures daily",
+      "h1": 1,
+      "main": 1,
+      "footer": 1,
+      "axe": []
+    },
+    "/demo": {
+      "status": 200,
+      "title": "Demo — Shapeshift Set",
+      "h1": 1,
+      "main": 1,
+      "footer": 1,
+      "axe": []
+    },
+    "/privacy": {
+      "status": 200,
+      "title": "Privacy — Shapeshift Set",
+      "h1": 1,
+      "main": 1,
+      "footer": 1,
+      "axe": []
+    },
+    "/terms": {
+      "status": 200,
+      "title": "Terms — Shapeshift Set",
+      "h1": 1,
+      "main": 1,
+      "footer": 1,
+      "axe": []
+    },
+    "/missing-page": {
+      "status": 404,
+      "title": "Page not found — Shapeshift Set",
+      "h1": 1,
+      "main": 1,
+      "footer": 1,
+      "axe": []
+    },
+    "links": [
+      {
+        "url": "https://shapeshift-set.sociobot.in/#main",
+        "status": 200
+      },
+      {
+        "url": "https://shapeshift-set.sociobot.in/",
+        "status": 200
+      },
+      {
+        "url": "https://shapeshift-set.sociobot.in/demo",
+        "status": 200
+      },
+      {
+        "url": "https://shapeshift-set.sociobot.in/#how",
+        "status": 200
+      },
+      {
+        "url": "https://shapeshift-set.sociobot.in/privacy",
+        "status": 200
+      },
+      {
+        "url": "https://shapeshift-set.sociobot.in/terms",
+        "status": 200
+      }
+    ]
+  },
+  "offline": {
+    "title": "Demo — Shapeshift Set",
+    "h1": "Place five sample creatures in order",
+    "board": true
+  },
+  "accessibility": {
+    "demoAxe": [],
+    "focus": [
+      {
+        "text": "Reset demo",
+        "focused": true,
+        "outline": "rgb(16, 24, 43) solid 3px"
+      },
+      {
+        "text": "Start for real",
+        "focused": true,
+        "outline": "rgb(16, 24, 43) solid 3px"
+      }
+    ],
+    "reducedMotion": {
+      "animation": "1e-05s",
+      "transition": "1e-05s"
+    },
+    "text200": {
+      "overflow": 0,
+      "boardVisible": true,
+      "controls": true
+    }
+  },
+  "responsive": {
+    "320": {
+      "overflow": 0,
+      "minCell": 45.3125,
+      "controlsInViewport": true
+    },
+    "881": {
+      "overflow": 0,
+      "minCell": 59.875,
+      "controlsInViewport": true
+    },
+    "900": {
+      "overflow": 0,
+      "minCell": 61.296875,
+      "controlsInViewport": true
+    },
+    "1024": {
+      "overflow": 0,
+      "minCell": 70.515625,
+      "controlsInViewport": true
+    },
+    "1100": {
+      "overflow": 0,
+      "minCell": 76.34375,
+      "controlsInViewport": true
+    },
+    "1279": {
+      "overflow": 0,
+      "minCell": 85.65625,
+      "controlsInViewport": true
+    },
+    "1280": {
+      "overflow": 0,
+      "minCell": 49.671875,
+      "controlsInViewport": true
+    }
+  },
+  "performance": {
+    "target": 60,
+    "frames": 180,
+    "elapsedMs": 2999.9,
+    "fps": 60.002000066668884,
+    "meanFrameMs": 16.66611111111111,
+    "p95FrameMs": 16.700000000000273,
+    "fixedStepHz": 60.33534451148371,
+    "cpuThrottle": 4
+  },
+  "requests": [
+    {
+      "method": "GET",
+      "url": "https://shapeshift-set.sociobot.in/",
+      "body": null
+    },
+    {
+      "method": "GET",
+      "url": "https://shapeshift-set.sociobot.in/assets/index-BkbLntcz.js",
+      "body": null
+    },
+    {
+      "method": "GET",
+      "url": "https://shapeshift-set.sociobot.in/assets/index-CMGtcJXn.css",
+      "body": null
+    },
+    {
+      "method": "GET",
+      "url": "https://shapeshift-set.sociobot.in/assets/moon-garden-1200.webp",
+      "body": null
+    },
+    {
+      "method": "GET",
+      "url": "https://shapeshift-set.sociobot.in/assets/moon-garden-720.webp",
+      "body": null
+    }
+  ],
+  "consoleErrors": []
+}
