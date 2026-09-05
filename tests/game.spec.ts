@@ -518,9 +518,13 @@ test('responsive play keeps board targets large and game controls reachable', as
 
 test('demo actions show a contrasting visible keyboard focus indicator', async ({ page }) => {
   await page.goto('/demo');
-  for (const selector of ['[data-demo-reset]', '.demo-banner a']) {
+  for (const [selector, previous, key] of [
+    ['[data-demo-reset]', '.demo-banner a', 'Shift+Tab'],
+    ['.demo-banner a', '[data-demo-reset]', 'Tab'],
+  ]) {
+    await page.locator(previous).focus();
+    await page.keyboard.press(key);
     const indicator = await page.locator(selector).evaluate((control) => {
-      (control as HTMLElement).focus();
       const style = getComputedStyle(control);
       const banner = control.closest<HTMLElement>('.demo-banner')!;
       return {
