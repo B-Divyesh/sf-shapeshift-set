@@ -1,0 +1,213 @@
+{
+  "base": "https://shapeshift-set.sociobot.in",
+  "checkedAt": "2026-09-05T20:44:59.786Z",
+  "checks": {
+    "desktopFirstReadAndOneClickDemo": "PASS",
+    "phoneFirstReadAndTouch": "PASS",
+    "demoIsolationLossResetWinPrivacy": "PASS",
+    "invalidBoundaryRecovery": "PASS",
+    "keyboardOnlyCompleteRun": "PASS",
+    "realPersistenceAndDialogRecovery": "PASS",
+    "accessibilityRoutesAndResponsive": "PASS",
+    "serviceWorkerUpdateOfflineAnd404": "PASS",
+    "phoneTiming": "PASS"
+  },
+  "evidence": {
+    "desktopFirstScreen": {
+      "scrollY": 0,
+      "h1": "Place five creatures in the right order",
+      "audience": "For daily puzzle players who want one shared spatial challenge that ends after five creatures.",
+      "action": "Try it with sample data",
+      "actionResult": "Opens a complete sample board.",
+      "facts": [
+        "Free to play.",
+        "Progress stays in this browser.",
+        "A new shared board appears each UTC day."
+      ],
+      "boardTop": 316.453125,
+      "boardBottom": 629.53125,
+      "overflow": 0
+    },
+    "phoneFirstScreen": {
+      "scrollY": 0,
+      "h1": "Place five creatures in the right order",
+      "audience": "For daily puzzle players who want one shared spatial challenge that ends after five creatures.",
+      "action": "Try it with sample data",
+      "actionResult": "Opens a complete sample board.",
+      "facts": [
+        "Free to play.",
+        "Progress stays in this browser.",
+        "A new shared board appears each UTC day."
+      ],
+      "boardTop": 573.15625,
+      "overflow": 0
+    },
+    "demo": {
+      "boardId": "989809312",
+      "loss": "1/5",
+      "win": "5/5",
+      "copied": "Shapeshift Set 2026-08-14\n✦✦✦✦✦ 5/5 · Radiant\nBoard ID 989809312",
+      "storageUnchanged": true
+    },
+    "requests": {
+      "count": 5,
+      "origins": [
+        "https://shapeshift-set.sociobot.in"
+      ],
+      "methods": [
+        "GET"
+      ]
+    },
+    "keyboardTabCounts": [
+      15,
+      28,
+      34,
+      34,
+      18
+    ],
+    "realStorageKeys": [
+      "shapeshift-set:daily:2026-09-05"
+    ],
+    "routes": [
+      {
+        "path": "/",
+        "status": 200,
+        "title": "Shapeshift Set — order five creatures daily",
+        "lang": "en",
+        "h1": 1,
+        "main": 1,
+        "missingAlt": 0,
+        "description": "Place five shifting creatures on one shared 6x6 daily board. Finish a spatial puzzle with five placements.",
+        "canonical": "https://shapeshift-set.sociobot.in/",
+        "ogImage": "https://shapeshift-set.sociobot.in/assets/social-card.webp",
+        "overflow": 0,
+        "axeViolations": [],
+        "labelNameViolations": 0
+      },
+      {
+        "path": "/demo",
+        "status": 200,
+        "title": "Demo — Shapeshift Set",
+        "lang": "en",
+        "h1": 1,
+        "main": 1,
+        "missingAlt": 0,
+        "description": "Try a complete Shapeshift Set sample board without saving progress.",
+        "canonical": "https://shapeshift-set.sociobot.in/demo",
+        "ogImage": "https://shapeshift-set.sociobot.in/assets/social-card.webp",
+        "overflow": 0,
+        "axeViolations": [],
+        "labelNameViolations": 0
+      },
+      {
+        "path": "/privacy",
+        "status": 200,
+        "title": "Privacy — Shapeshift Set",
+        "lang": "en",
+        "h1": 1,
+        "main": 1,
+        "missingAlt": 0,
+        "description": "Learn what Shapeshift Set stores in your browser and how the game avoids accounts and third-party tracking.",
+        "canonical": "https://shapeshift-set.sociobot.in/privacy",
+        "ogImage": "https://shapeshift-set.sociobot.in/assets/social-card.webp",
+        "overflow": 0,
+        "axeViolations": [],
+        "labelNameViolations": 0
+      },
+      {
+        "path": "/terms",
+        "status": 200,
+        "title": "Terms — Shapeshift Set",
+        "lang": "en",
+        "h1": 1,
+        "main": 1,
+        "missingAlt": 0,
+        "description": "Read the terms for playing and sharing Shapeshift Set.",
+        "canonical": "https://shapeshift-set.sociobot.in/terms",
+        "ogImage": "https://shapeshift-set.sociobot.in/assets/social-card.webp",
+        "overflow": 0,
+        "axeViolations": [],
+        "labelNameViolations": 0
+      },
+      {
+        "path": "/missing-page",
+        "status": 404,
+        "title": "Page not found — Shapeshift Set",
+        "lang": "en",
+        "h1": 1,
+        "main": 1,
+        "missingAlt": 0,
+        "description": "Return to the current Shapeshift Set daily puzzle.",
+        "canonical": "https://shapeshift-set.sociobot.in/404",
+        "ogImage": "https://shapeshift-set.sociobot.in/assets/social-card.webp",
+        "overflow": 0,
+        "axeViolations": [],
+        "labelNameViolations": 0
+      }
+    ],
+    "responsive": {
+      "zoomOverflow": 0,
+      "targets": 56,
+      "undersized": [],
+      "focus": {
+        "text": "Skip to the puzzle",
+        "focusVisible": true,
+        "outlineColor": "rgb(185, 214, 107)",
+        "outlineStyle": "solid",
+        "outlineWidth": "3px"
+      },
+      "reduced": {
+        "animation": "1e-05s",
+        "transition": "1e-05s"
+      }
+    },
+    "internalLinks": [
+      {
+        "href": "https://shapeshift-set.sociobot.in/",
+        "status": 200
+      },
+      {
+        "href": "https://shapeshift-set.sociobot.in/demo",
+        "status": 200
+      },
+      {
+        "href": "https://shapeshift-set.sociobot.in/privacy",
+        "status": 200
+      },
+      {
+        "href": "https://shapeshift-set.sociobot.in/terms",
+        "status": 200
+      }
+    ],
+    "serviceWorker": {
+      "active": true,
+      "controlled": true,
+      "cacheNames": [
+        "shapeshift-set-1hbr8qe"
+      ],
+      "assets": [
+        "https://shapeshift-set.sociobot.in/assets/index-C3bkU2Gm.js",
+        "https://shapeshift-set.sociobot.in/assets/index-C7W7j_p6.css"
+      ],
+      "cached": [
+        true,
+        true
+      ]
+    },
+    "timing": {
+      "fixed": {
+        "elapsed": 1000.3000000000466,
+        "ticks": 60,
+        "rate": 59.982005398377694,
+        "target": "60"
+      },
+      "rendered": {
+        "frames": 180,
+        "elapsed": 2999.7999999999997,
+        "fps": 60.00400026668445,
+        "meanMs": 16.665555555555553,
+        "p95Ms": 16.700000000000728
+      }
+    }
+  }
+}

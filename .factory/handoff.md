@@ -1,4 +1,37 @@
-# Shapeshift Set verification 5 handoff
+# Shapeshift Set review 2 handoff
+
+## Review 2
+
+**FAIL — 4 findings remain, including 1 untested public claim.**
+
+Review 2 examined implementation `13798bda2c3d332c1a9051ae5145ff87e2223716`,
+test-only commit `76b1867a1929e48512aa7b57e22cd9edb9cd3657`, and documentation base
+`2acb9ba2f5466edb37e78a933544d02c796cd40e`. It made no product-code changes.
+
+Fresh live desktop and phone runs passed the first-screen, sample, loss,
+middle-score, perfect-win, reset, touch, keyboard, privacy, route, offline,
+and timing checks. All 21 declared claim commands passed independently from a
+clean clone. `npm test` passed 29/29, lint passed, build produced `dist/`, and
+13 served files byte-matched the clean build. Lighthouse mobile scored
+100/100/100/100.
+
+The strict review found four release-blocking or material issues:
+
+- At 900 px, the game creates 81 px of clipped, non-scrollable overflow and
+  places the Crook control fully outside the viewport, blocking pointer/touch
+  completion. The fault is also present at 881 and 1024 px.
+- Reset demo and Start for real use a lichen focus outline on the same lichen
+  banner. Its 1:1 contrast gives keyboard users no visible focus change.
+- The public 6×6 claim has no manifest entry or tagged quantitative assertion.
+- All 36 board cells fall below 44×44 px at 320 px and at tested widths from
+  881 through 1100 px.
+
+See `.factory/review-2.md` and `.factory/review-2-evidence/`. The next repair
+should widen the stacked-layout breakpoint or remove the inner minimum-width
+overflow, preserve 44 px board targets at every supported width, give the demo
+actions a contrasting focus treatment, and register/assert the 6×6 claim.
+
+## Previous verification 5 handoff
 
 ## Independent verification 5
 

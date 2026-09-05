@@ -1,0 +1,489 @@
+{
+  "checkedAt": "2026-09-05T20:53:28.513Z",
+  "matrix": [
+    {
+      "viewportWidth": 320,
+      "documentWidth": 320,
+      "overflow": 0,
+      "bodyOverflowX": "clip",
+      "game": {
+        "left": 16,
+        "right": 304,
+        "width": 288
+      },
+      "crook": {
+        "left": 241.796875,
+        "right": 291,
+        "width": 49.203125,
+        "height": 105
+      },
+      "targetCount": 56,
+      "undersizedCount": 36,
+      "undersized": [
+        {
+          "name": "Row 1, column 1. Place selected creature in Mote habitat, row 1, column 1.",
+          "width": 39.046875,
+          "height": 39.046875,
+          "left": 37.859375,
+          "right": 76.90625
+        },
+        {
+          "name": "Row 1, column 2. Place selected creature in Mote habitat, row 1, column 2.",
+          "width": 39.046875,
+          "height": 39.046875,
+          "left": 78.90625,
+          "right": 117.953125
+        },
+        {
+          "name": "Row 1, column 3. Open ground.",
+          "width": 39.046875,
+          "height": 39.046875,
+          "left": 119.953125,
+          "right": 159
+        },
+        {
+          "name": "Row 1, column 4. Place selected creature in Wing habitat, row 1, column 4.",
+          "width": 39.046875,
+          "height": 39.046875,
+          "left": 161,
+          "right": 200.046875
+        },
+        {
+          "name": "Row 1, column 5. Place selected creature in Wing habitat, row 1, column 5.",
+          "width": 39.046875,
+          "height": 39.046875,
+          "left": 202.046875,
+          "right": 241.09375
+        },
+        {
+          "name": "Row 1, column 6. Place selected creature in Wing habitat, row 1, column 6.",
+          "width": 39.046875,
+          "height": 39.046875,
+          "left": 243.09375,
+          "right": 282.140625
+        }
+      ]
+    },
+    {
+      "viewportWidth": 360,
+      "documentWidth": 360,
+      "overflow": 0,
+      "bodyOverflowX": "clip",
+      "game": {
+        "left": 16,
+        "right": 344,
+        "width": 328
+      },
+      "crook": {
+        "left": 273.796875,
+        "right": 331,
+        "width": 57.203125,
+        "height": 105
+      },
+      "targetCount": 56,
+      "undersizedCount": 0,
+      "undersized": []
+    },
+    {
+      "viewportWidth": 390,
+      "documentWidth": 390,
+      "overflow": 0,
+      "bodyOverflowX": "clip",
+      "game": {
+        "left": 16,
+        "right": 374,
+        "width": 358
+      },
+      "crook": {
+        "left": 297.796875,
+        "right": 361,
+        "width": 63.203125,
+        "height": 105
+      },
+      "targetCount": 56,
+      "undersizedCount": 0,
+      "undersized": []
+    },
+    {
+      "viewportWidth": 600,
+      "documentWidth": 600,
+      "overflow": 0,
+      "bodyOverflowX": "clip",
+      "game": {
+        "left": 16,
+        "right": 584,
+        "width": 568
+      },
+      "crook": {
+        "left": 465.796875,
+        "right": 570.984375,
+        "width": 105.1875,
+        "height": 104
+      },
+      "targetCount": 56,
+      "undersizedCount": 0,
+      "undersized": []
+    },
+    {
+      "viewportWidth": 720,
+      "documentWidth": 720,
+      "overflow": 0,
+      "bodyOverflowX": "clip",
+      "game": {
+        "left": 16,
+        "right": 704,
+        "width": 688
+      },
+      "crook": {
+        "left": 559.234375,
+        "right": 681.390625,
+        "width": 122.15625,
+        "height": 118
+      },
+      "targetCount": 57,
+      "undersizedCount": 0,
+      "undersized": []
+    },
+    {
+      "viewportWidth": 768,
+      "documentWidth": 768,
+      "overflow": 0,
+      "bodyOverflowX": "clip",
+      "game": {
+        "left": 16,
+        "right": 752,
+        "width": 736
+      },
+      "crook": {
+        "left": 596.78125,
+        "right": 727.96875,
+        "width": 131.1875,
+        "height": 118
+      },
+      "targetCount": 57,
+      "undersizedCount": 0,
+      "undersized": []
+    },
+    {
+      "viewportWidth": 800,
+      "documentWidth": 800,
+      "overflow": 0,
+      "bodyOverflowX": "clip",
+      "game": {
+        "left": 16,
+        "right": 784,
+        "width": 768
+      },
+      "crook": {
+        "left": 621.796875,
+        "right": 758.984375,
+        "width": 137.1875,
+        "height": 118
+      },
+      "targetCount": 57,
+      "undersizedCount": 0,
+      "undersized": []
+    },
+    {
+      "viewportWidth": 881,
+      "documentWidth": 973,
+      "overflow": 92,
+      "bodyOverflowX": "clip",
+      "game": {
+        "left": 322.234375,
+        "right": 865,
+        "width": 542.765625
+      },
+      "crook": {
+        "left": 920.90625,
+        "right": 972.5,
+        "width": 51.59375,
+        "height": 118
+      },
+      "targetCount": 57,
+      "undersizedCount": 36,
+      "undersized": [
+        {
+          "name": "Row 1, column 1. Place selected creature in Mote habitat, row 1, column 1.",
+          "width": 41.03125,
+          "height": 41.03125,
+          "left": 359.046875,
+          "right": 400.078125
+        },
+        {
+          "name": "Row 1, column 2. Place selected creature in Mote habitat, row 1, column 2.",
+          "width": 41.03125,
+          "height": 41.03125,
+          "left": 403.078125,
+          "right": 444.109375
+        },
+        {
+          "name": "Row 1, column 3. Open ground.",
+          "width": 41.03125,
+          "height": 41.03125,
+          "left": 447.109375,
+          "right": 488.140625
+        },
+        {
+          "name": "Row 1, column 4. Place selected creature in Wing habitat, row 1, column 4.",
+          "width": 41.046875,
+          "height": 41.03125,
+          "left": 491.140625,
+          "right": 532.1875
+        },
+        {
+          "name": "Row 1, column 5. Place selected creature in Wing habitat, row 1, column 5.",
+          "width": 41.03125,
+          "height": 41.03125,
+          "left": 535.1875,
+          "right": 576.21875
+        },
+        {
+          "name": "Row 1, column 6. Place selected creature in Wing habitat, row 1, column 6.",
+          "width": 41.03125,
+          "height": 41.03125,
+          "left": 579.21875,
+          "right": 620.25
+        }
+      ]
+    },
+    {
+      "viewportWidth": 900,
+      "documentWidth": 981,
+      "overflow": 81,
+      "bodyOverflowX": "clip",
+      "game": {
+        "left": 328.734375,
+        "right": 884,
+        "width": 555.265625
+      },
+      "crook": {
+        "left": 929.125,
+        "right": 980.71875,
+        "width": 51.59375,
+        "height": 118
+      },
+      "targetCount": 57,
+      "undersizedCount": 36,
+      "undersized": [
+        {
+          "name": "Row 1, column 1. Place selected creature in Mote habitat, row 1, column 1.",
+          "width": 41.03125,
+          "height": 41.03125,
+          "left": 366.125,
+          "right": 407.15625
+        },
+        {
+          "name": "Row 1, column 2. Place selected creature in Mote habitat, row 1, column 2.",
+          "width": 41.03125,
+          "height": 41.03125,
+          "left": 410.15625,
+          "right": 451.1875
+        },
+        {
+          "name": "Row 1, column 3. Open ground.",
+          "width": 41.03125,
+          "height": 41.03125,
+          "left": 454.1875,
+          "right": 495.21875
+        },
+        {
+          "name": "Row 1, column 4. Place selected creature in Wing habitat, row 1, column 4.",
+          "width": 41.046875,
+          "height": 41.03125,
+          "left": 498.21875,
+          "right": 539.265625
+        },
+        {
+          "name": "Row 1, column 5. Place selected creature in Wing habitat, row 1, column 5.",
+          "width": 41.03125,
+          "height": 41.03125,
+          "left": 542.265625,
+          "right": 583.296875
+        },
+        {
+          "name": "Row 1, column 6. Place selected creature in Wing habitat, row 1, column 6.",
+          "width": 41.03125,
+          "height": 41.03125,
+          "left": 586.296875,
+          "right": 627.328125
+        }
+      ]
+    },
+    {
+      "viewportWidth": 1024,
+      "documentWidth": 1034,
+      "overflow": 10,
+      "bodyOverflowX": "clip",
+      "game": {
+        "left": 371.15625,
+        "right": 1008,
+        "width": 636.84375
+      },
+      "crook": {
+        "left": 982.703125,
+        "right": 1034.296875,
+        "width": 51.59375,
+        "height": 118
+      },
+      "targetCount": 57,
+      "undersizedCount": 36,
+      "undersized": [
+        {
+          "name": "Row 1, column 1. Place selected creature in Mote habitat, row 1, column 1.",
+          "width": 41.03125,
+          "height": 41.03125,
+          "left": 412.265625,
+          "right": 453.296875
+        },
+        {
+          "name": "Row 1, column 2. Place selected creature in Mote habitat, row 1, column 2.",
+          "width": 41.03125,
+          "height": 41.03125,
+          "left": 456.296875,
+          "right": 497.328125
+        },
+        {
+          "name": "Row 1, column 3. Open ground.",
+          "width": 41.03125,
+          "height": 41.03125,
+          "left": 500.328125,
+          "right": 541.359375
+        },
+        {
+          "name": "Row 1, column 4. Place selected creature in Wing habitat, row 1, column 4.",
+          "width": 41.046875,
+          "height": 41.03125,
+          "left": 544.359375,
+          "right": 585.40625
+        },
+        {
+          "name": "Row 1, column 5. Place selected creature in Wing habitat, row 1, column 5.",
+          "width": 41.03125,
+          "height": 41.03125,
+          "left": 588.40625,
+          "right": 629.4375
+        },
+        {
+          "name": "Row 1, column 6. Place selected creature in Wing habitat, row 1, column 6.",
+          "width": 41.03125,
+          "height": 41.03125,
+          "left": 632.4375,
+          "right": 673.46875
+        }
+      ]
+    },
+    {
+      "viewportWidth": 1100,
+      "documentWidth": 1100,
+      "overflow": 0,
+      "bodyOverflowX": "clip",
+      "game": {
+        "left": 397.15625,
+        "right": 1084,
+        "width": 686.84375
+      },
+      "crook": {
+        "left": 1014.546875,
+        "right": 1066.140625,
+        "width": 51.59375,
+        "height": 118
+      },
+      "targetCount": 57,
+      "undersizedCount": 36,
+      "undersized": [
+        {
+          "name": "Row 1, column 1. Place selected creature in Mote habitat, row 1, column 1.",
+          "width": 41.03125,
+          "height": 41.03125,
+          "left": 439.546875,
+          "right": 480.578125
+        },
+        {
+          "name": "Row 1, column 2. Place selected creature in Mote habitat, row 1, column 2.",
+          "width": 41.03125,
+          "height": 41.03125,
+          "left": 483.578125,
+          "right": 524.609375
+        },
+        {
+          "name": "Row 1, column 3. Open ground.",
+          "width": 41.03125,
+          "height": 41.03125,
+          "left": 527.609375,
+          "right": 568.640625
+        },
+        {
+          "name": "Row 1, column 4. Place selected creature in Wing habitat, row 1, column 4.",
+          "width": 41.046875,
+          "height": 41.03125,
+          "left": 571.640625,
+          "right": 612.6875
+        },
+        {
+          "name": "Row 1, column 5. Place selected creature in Wing habitat, row 1, column 5.",
+          "width": 41.03125,
+          "height": 41.03125,
+          "left": 615.6875,
+          "right": 656.71875
+        },
+        {
+          "name": "Row 1, column 6. Place selected creature in Wing habitat, row 1, column 6.",
+          "width": 41.03125,
+          "height": 41.03125,
+          "left": 659.71875,
+          "right": 700.75
+        }
+      ]
+    },
+    {
+      "viewportWidth": 1280,
+      "documentWidth": 1280,
+      "overflow": 0,
+      "bodyOverflowX": "clip",
+      "game": {
+        "left": 468.828125,
+        "right": 1232,
+        "width": 763.171875
+      },
+      "crook": {
+        "left": 1147.390625,
+        "right": 1198.984375,
+        "width": 51.59375,
+        "height": 118
+      },
+      "targetCount": 57,
+      "undersizedCount": 0,
+      "undersized": []
+    },
+    {
+      "viewportWidth": 1440,
+      "documentWidth": 1440,
+      "overflow": 0,
+      "bodyOverflowX": "clip",
+      "game": {
+        "left": 548.828125,
+        "right": 1312,
+        "width": 763.171875
+      },
+      "crook": {
+        "left": 1227.390625,
+        "right": 1278.984375,
+        "width": 51.59375,
+        "height": 118
+      },
+      "targetCount": 57,
+      "undersizedCount": 0,
+      "undersized": []
+    }
+  ],
+  "demoBannerFocus": {
+    "text": "Reset demo",
+    "focusVisible": true,
+    "outlineColor": "rgb(185, 214, 107)",
+    "outlineWidth": "3px",
+    "outlineOffset": "4px",
+    "bannerBackground": "rgb(185, 214, 107)",
+    "contrastRatio": 1
+  }
+}
