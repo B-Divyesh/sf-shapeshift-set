@@ -3,7 +3,7 @@
 **Verdict: PASS — deployed repair verified on HTTPS.**
 
 - Implementation candidate: `08d18d967b84f9ba9b71549f4e069dff608e1824`
-- Documentation/evidence base: recorded in the follow-up documentation commit
+- Documentation/evidence base: `1b2b702ef3f200c61ab73fe825bff10743f6ea1a`
 - Deployment: 2026-09-05 UTC via `/opt/fleet/lib/deploy-static.sh shapeshift-set dist`
 - Live URL: <https://shapeshift-set.sociobot.in>
 
