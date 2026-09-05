@@ -167,12 +167,14 @@ function boardCell(x: number, y: number): string {
 function trayPiece(piece: DailyPiece, index: number): string {
   const oriented = orientCells(piece.cells, piece.rotation, piece.flipped);
   const selected = state.selected === piece.id;
+  const visibleState = piece.placed ? (piece.mutation ? 'Changed' : 'No change') : (isOriented(piece) ? 'Ready' : 'Needs turning');
+  const visibleLabel = `${index + 1} ${piece.name} ${visibleState}`;
   return `<button class="tray-piece piece-${piece.id}${selected ? ' selected' : ''}" data-select-piece="${piece.id}"
-      ${piece.placed ? 'disabled' : ''} aria-label="${piece.placed ? `${piece.name} is already placed` : `Select ${piece.name} — ${isOriented(piece) ? 'ready' : 'needs turning'}`}" aria-pressed="${selected}" aria-keyshortcuts="${index + 1}">
+      ${piece.placed ? 'disabled' : ''} aria-label="${visibleLabel}${piece.placed ? ' — already placed' : ' — select creature'}" aria-pressed="${selected}" aria-keyshortcuts="${index + 1}">
       <span class="piece-number" aria-hidden="true">${index + 1}</span>
       ${shapeSvg(oriented, piece.name)}
       <span>${piece.name}</span>
-      <small>${piece.placed ? (piece.mutation ? 'Changed' : 'No change') : (isOriented(piece) ? 'Ready' : 'Needs turning')}</small>
+      <small>${visibleState}</small>
     </button>`;
 }
 
@@ -235,9 +237,9 @@ function game(): string {
         </div>
         <div class="piece-tray">${state.pieces.map(trayPiece).join('')}</div>
         <div class="turn-tools" aria-label="Turn the selected creature">
-          <button data-rotate="-1" aria-label="Rotate selected creature left" aria-keyshortcuts="Q" ${selectedPiece ? '' : 'disabled'}>↶ <span>Rotate left</span></button>
-          <button data-flip aria-label="Flip selected creature" aria-keyshortcuts="F" ${selectedPiece ? '' : 'disabled'}>↔ <span>Flip creature</span></button>
-          <button data-rotate="1" aria-label="Rotate selected creature right" aria-keyshortcuts="E" ${selectedPiece ? '' : 'disabled'}>↷ <span>Rotate right</span></button>
+          <button data-rotate="-1" aria-label="Rotate left — turn the selected creature" aria-keyshortcuts="Q" ${selectedPiece ? '' : 'disabled'}>↶ <span>Rotate left</span></button>
+          <button data-flip aria-label="Flip creature — turn the selected creature over" aria-keyshortcuts="F" ${selectedPiece ? '' : 'disabled'}>↔ <span>Flip creature</span></button>
+          <button data-rotate="1" aria-label="Rotate right — turn the selected creature" aria-keyshortcuts="E" ${selectedPiece ? '' : 'disabled'}>↷ <span>Rotate right</span></button>
         </div>
         <div class="history-tools">
           <button class="text-button" data-undo ${state.moves.length ? '' : 'disabled'}>Undo last piece</button>
