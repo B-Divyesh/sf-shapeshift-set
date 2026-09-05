@@ -1,0 +1,112 @@
+{
+  "verdict": "PASS",
+  "desktop": {
+    "first": {
+      "title": "Shapeshift Set — order five creatures daily",
+      "scrollY": 0,
+      "h1": "Place five creatures in the right order",
+      "audience": "For daily puzzle players who want one shared spatial challenge that ends after five creatures.",
+      "action": "Try it with sample data",
+      "actionResult": "Opens a complete sample board.",
+      "boardTop": 316.453125
+    },
+    "labelAxe": {
+      "violations": [],
+      "incomplete": [
+        "aria-prohibited-attr",
+        "color-contrast"
+      ]
+    },
+    "loss": "1/5 Try again",
+    "reset": "0/5, empty trail",
+    "win": "5/5 Perfect",
+    "storage": [],
+    "origins": [
+      "https://shapeshift-set.sociobot.in"
+    ]
+  },
+  "phone": {
+    "first": {
+      "scrollY": 0,
+      "title": "Shapeshift Set — order five creatures daily",
+      "h1": "Place five creatures in the right order",
+      "audience": "For daily puzzle players who want one shared spatial challenge that ends after five creatures.",
+      "action": "Try it with sample data",
+      "actionResult": "Opens a complete sample board.",
+      "boardTop": 573.15625,
+      "overflow": 0
+    },
+    "touch": "placed Mote: 1/5",
+    "demoStorage": []
+  },
+  "routes": [
+    {
+      "path": "/",
+      "status": 200,
+      "title": "Shapeshift Set — order five creatures daily",
+      "lang": "en",
+      "h1": 1,
+      "main": 1,
+      "missingAlt": 0,
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "path": "/demo",
+      "status": 200,
+      "title": "Demo — Shapeshift Set",
+      "lang": "en",
+      "h1": 1,
+      "main": 1,
+      "missingAlt": 0,
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "path": "/privacy",
+      "status": 200,
+      "title": "Privacy — Shapeshift Set",
+      "lang": "en",
+      "h1": 1,
+      "main": 1,
+      "missingAlt": 0,
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "path": "/terms",
+      "status": 200,
+      "title": "Terms — Shapeshift Set",
+      "lang": "en",
+      "h1": 1,
+      "main": 1,
+      "missingAlt": 0,
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "path": "/missing-page",
+      "status": 404,
+      "title": "Page not found — Shapeshift Set",
+      "lang": "en",
+      "h1": 1,
+      "main": 1,
+      "missingAlt": 0,
+      "overflow": 0,
+      "axe": []
+    }
+  ],
+  "offline": {
+    "reopened": true
+  },
+  "frameRate": {
+    "rate": 59.98800239952289,
+    "elapsed": 1000.1999999999534
+  },
+  "errors": [],
+  "reducedMotion": {
+    "animation": "1e-05s",
+    "transition": "1e-05s"
+  },
+  "privacyIsolation": "sentinel local storage and cookie unchanged in demo"
+}

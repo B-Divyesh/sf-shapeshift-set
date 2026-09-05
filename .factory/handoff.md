@@ -1,4 +1,29 @@
-# Shapeshift Set repair 4 handoff
+# Shapeshift Set verification 5 handoff
+
+## Independent verification 5
+
+**PASS — accept the deployed implementation.**
+
+Verification 5 reviewed implementation `13798bda2c3d332c1a9051ae5145ff87e2223716`,
+test-only commit `76b1867a1929e48512aa7b57e22cd9edb9cd3657`, and documentation
+base `1626cc87977c3933631ae2a41795341b36898903`. It made no product-code
+changes.
+
+Fresh desktop and phone live sessions showed the job, audience, first action,
+and playable board before scrolling. The isolated demo showed its persistent
+sample banner, reached both 1/5 loss and 5/5 Perfect end screens, reset to an
+empty board, preserved real-data sentinels, and made only same-origin requests.
+Touch play, offline reopen, real 404, legal routes, reduced motion, titles,
+and 59.99 Hz fixed timing passed. The repaired experimental Axe
+`label-content-name-mismatch` scan had zero violations.
+
+`npm ci`, all 21 individual claim commands, `npm test` (29/29), `npm run lint`,
+and `npm run build` passed. Live `index.html`, JS, and CSS hashes match
+`dist`. There are zero findings and zero untested claims. See
+`.factory/verification-5.md` and `.factory/verification-5-evidence/`.
+
+## Previous repair 4 handoff
+
 
 ## Current result
 
