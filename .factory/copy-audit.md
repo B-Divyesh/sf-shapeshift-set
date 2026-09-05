@@ -1,6 +1,6 @@
 # Landing copy audit
 
-Re-audited September 2, 2026 for polish round 1. Word counts treat numbers and
+Re-audited September 5, 2026 for repair 5. Word counts treat numbers and
 hyphenated forms as one word. No listed sentence exceeds 22 words or contains a
 banned marketing word.
 

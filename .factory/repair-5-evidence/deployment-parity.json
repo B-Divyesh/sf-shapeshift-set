@@ -1,0 +1,67 @@
+[
+  {
+    "file": "404.css",
+    "status": 200,
+    "match": true
+  },
+  {
+    "file": "404.html",
+    "status": 200,
+    "match": true
+  },
+  {
+    "file": "assets/apple-touch.png",
+    "status": 200,
+    "match": true
+  },
+  {
+    "file": "assets/favicon.svg",
+    "status": 200,
+    "match": true
+  },
+  {
+    "file": "assets/index-BkbLntcz.js",
+    "status": 200,
+    "match": true
+  },
+  {
+    "file": "assets/index-CMGtcJXn.css",
+    "status": 200,
+    "match": true
+  },
+  {
+    "file": "assets/moon-garden-1200.webp",
+    "status": 200,
+    "match": true
+  },
+  {
+    "file": "assets/moon-garden-720.webp",
+    "status": 200,
+    "match": true
+  },
+  {
+    "file": "assets/social-card.webp",
+    "status": 200,
+    "match": true
+  },
+  {
+    "file": "index.html",
+    "status": 200,
+    "match": true
+  },
+  {
+    "file": "robots.txt",
+    "status": 200,
+    "match": true
+  },
+  {
+    "file": "sitemap.xml",
+    "status": 200,
+    "match": true
+  },
+  {
+    "file": "sw.js",
+    "status": 200,
+    "match": true
+  }
+]
