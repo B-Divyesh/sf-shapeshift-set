@@ -1,0 +1,32 @@
+{
+  "claim_id": "demo-isolation",
+  "declared_command_result": "PASS",
+  "review_result": "FAIL_INCOMPLETE_TEST",
+  "public_promise": "Demo uses memory only and never reads or changes real progress.",
+  "documented_storage_scope": [
+    "localStorage",
+    "IndexedDB",
+    "OPFS",
+    "cookies",
+    "backend"
+  ],
+  "registered_test_observes": [
+    "a non-date localStorage sentinel key",
+    "a cookie sentinel",
+    "IndexedDB database enumeration"
+  ],
+  "registered_test_does_not_observe": [
+    "the real sample-date key shapeshift-set:daily:2026-08-14",
+    "OPFS contents or access",
+    "whether real progress was read during demo mode"
+  ],
+  "fresh_live_ad_hoc_check": {
+    "opfs_available": true,
+    "demo_storage_reads_before_inspection": [],
+    "sample_date_sentinel_after_demo": "real-sample-date-sentinel",
+    "cookie_after_demo": "real-progress-cookie=keep",
+    "opfs_file_after_demo": "keep",
+    "product_behavior": "PASS"
+  },
+  "reason_it_remains_a_finding": "The current product behaves correctly, but the exact required claim command would still pass if a regression read the real sample-date key or changed OPFS. The claim contract requires that command to prove the full observable promise."
+}

@@ -1,0 +1,75 @@
+{
+  "checkedAt": "2026-09-06T06:26:41.095Z",
+  "persistence": {
+    "storage": {
+      "keys": [
+        "shapeshift-set:daily:2026-09-06"
+      ],
+      "values": [
+        "{\"date\":\"2026-09-06\",\"seed\":214771850,\"pieces\":[{\"id\":\"mote\",\"name\":\"Mote\",\"cells\":[[0,0],[1,0],[0,1]],\"color\":\"#f2c45f\",\"mutates\":null,\"habitat\":[[0,5],[1,5],[0,4]],\"targetSignature\":\"0,0|0,1|1,1\",\"rotation\":3,\"flipped\":false,\"placed\":true,\"mutation\":true},{\"id\":\"nook\",\"name\":\"Nook\",\"cells\":[[0,0],[1,0],[0,1],[1,1]],\"color\":\"#ff7a6e\",\"mutates\":\"wing\",\"habitat\":[[1,4],[2,4],[1,3],[2,3]],\"targetSignature\":\"0,0|1,0|0,1|1,1\",\"rotation\":0,\"flipped\":false,\"placed\":false,\"mutation\":null},{\"id\":\"wing\",\"name\":\"Wing\",\"cells\":[[0,0],[1,0],[2,0],[0,1]],\"color\":\"#7fc6c8\",\"mutates\":\"crown\",\"habitat\":[[3,5],[4,5],[5,5],[3,4]],\"targetSignature\":\"0,0|0,1|1,1|2,1\",\"rotation\":1,\"flipped\":false,\"placed\":false,\"mutation\":null},{\"id\":\"crown\",\"name\":\"Crown\",\"cells\":[[1,0],[0,1],[1,1],[2,1],[1,2]],\"color\":\"#b9d66b\",\"mutates\":\"mote\",\"habitat\":[[3,3],[2,2],[3,2],[4,2],[3,1]],\"targetSignature\":\"1,0|0,1|1,1|2,1|1,2\",\"rotation\":2,\"flipped\":true,\"placed\":false,\"mutation\":null},{\"id\":\"crook\",\"name\":\"Crook\",\"cells\":[[0,0],[1,0],[1,1],[2,1]],\"color\":\"#cf9ce8\",\"mutates\":\"nook\",\"habitat\":[[0,2],[1,2],[1,1],[2,1]],\"targetSignature\":\"1,0|2,0|0,1|1,1\",\"rotation\":1,\"flipped\":false,\"placed\":false,\"mutation\":null}],\"selected\":null,\"moves\":[{\"id\":\"mote\",\"mutation\":true}],\"score\":1,\"undos\":0,\"cursor\":[0,4],\"finished\":false}"
+      ]
+    },
+    "after": {
+      "score": "1/5",
+      "trail": 1,
+      "moteDisabled": true
+    }
+  },
+  "rejectedWrite": {
+    "warning": "Progress could not be saved. This run will not survive reload. Keep this tab open to finish the board.",
+    "scoreAfterReload": "0/5"
+  },
+  "keyboard": {
+    "skip": {
+      "text": "Skip to the puzzle",
+      "visible": true,
+      "outline": "rgb(185, 214, 107) solid 3px"
+    },
+    "mainFocused": true
+  },
+  "connectivity": {
+    "offlineMessage": "You are offline. This loaded board still works.",
+    "onlineMessage": "You are back online. The current board stayed in place.",
+    "offlineScore": "1/5",
+    "onlineScore": "1/5"
+  },
+  "metadata": {
+    "/": {
+      "description": "Place five shifting creatures on one shared 6x6 daily board. Finish a spatial puzzle with five placements.",
+      "canonical": "https://shapeshift-set.sociobot.in/",
+      "viewport": "width=device-width, initial-scale=1.0",
+      "imagesMissingAlt": 0,
+      "audio": 0
+    },
+    "/demo": {
+      "description": "Try a complete Shapeshift Set sample board without saving progress.",
+      "canonical": "https://shapeshift-set.sociobot.in/demo",
+      "viewport": "width=device-width, initial-scale=1.0",
+      "imagesMissingAlt": 0,
+      "audio": 0
+    },
+    "/privacy": {
+      "description": "Learn what Shapeshift Set stores in your browser and how the game avoids accounts and third-party tracking.",
+      "canonical": "https://shapeshift-set.sociobot.in/privacy",
+      "viewport": "width=device-width, initial-scale=1.0",
+      "imagesMissingAlt": 0,
+      "audio": 0
+    },
+    "/terms": {
+      "description": "Read the terms for playing and sharing Shapeshift Set.",
+      "canonical": "https://shapeshift-set.sociobot.in/terms",
+      "viewport": "width=device-width, initial-scale=1.0",
+      "imagesMissingAlt": 0,
+      "audio": 0
+    },
+    "consoleErrors": [],
+    "missing": {
+      "status": 404,
+      "title": "Page not found — Shapeshift Set",
+      "returnAction": true,
+      "expected404Console": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ]
+    }
+  }
+}

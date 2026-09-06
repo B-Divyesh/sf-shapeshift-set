@@ -1,0 +1,22 @@
+{
+  "implementation_candidate": "08d18d967b84f9ba9b71549f4e069dff608e1824",
+  "test_follow_up": "df4eff25078fcbdbecb04aafae3840edbfa5f872",
+  "documentation_base": "ccb4763e52211392212ed309885692e2b6976602",
+  "clean_checkout": "ccb4763e52211392212ed309885692e2b6976602",
+  "public_files_checked": 13,
+  "byte_matches": 13,
+  "mismatches": 0,
+  "representative_sha256": {
+    "index.html": "087ec156a29efbec4bca8ac39e1e4ff65bffe1533ed40e35a208cf479d63974e",
+    "assets/index-BkbLntcz.js": "63e4e7f410af6322a9bdf3b65ab9aea1e91ae8dd44bd3e0c453e262a606554f9",
+    "assets/index-CMGtcJXn.css": "54856cb7ef8d1b2ff8289bd5f66f51c9b5857edc98350454196b4faf09fa5483"
+  },
+  "response_headers": {
+    "strict-transport-security": "max-age=10886400; includeSubDomains; preload",
+    "referrer-policy": "strict-origin-when-cross-origin",
+    "x-content-type-options": "nosniff",
+    "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'",
+    "permissions-policy": "camera=(), microphone=(), geolocation=()"
+  },
+  "missing_route_status": 404
+}
