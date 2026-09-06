@@ -1,0 +1,255 @@
+{
+  "checkedAt": "2026-09-06T06:47:39.262Z",
+  "implementationSha": "08d18d967b84f9ba9b71549f4e069dff608e1824",
+  "repairSha": "8a861ded577d60d01def314aa6f584b9f67203d4",
+  "desktop": {
+    "firstScreen": {
+      "title": "Shapeshift Set — order five creatures daily",
+      "h1": "Place five creatures in the right order",
+      "audience": "For daily puzzle players who want one shared spatial challenge that ends after five creatures.",
+      "action": "Try it with sample data",
+      "actionNote": "Opens a complete sample board.",
+      "facts": [
+        "Free to play.",
+        "Progress stays in this browser.",
+        "A new shared board appears each UTC day."
+      ],
+      "actionVisible": true,
+      "boardVisible": true,
+      "overflow": 0,
+      "scrollY": 0
+    },
+    "loss": {
+      "score": "1/5",
+      "label": "Try again (0–2)",
+      "items": 5,
+      "successes": 1
+    },
+    "win": {
+      "score": "5/5",
+      "label": "Perfect (5)",
+      "items": 5,
+      "successes": 5
+    },
+    "clipboard": "Shapeshift Set 2026-08-14\n✦✦✦✦✦ 5/5 · Radiant\nBoard ID 989809312",
+    "sample": {
+      "banner": "Demo — sample board, nothing is saved\n    Reset demoStart for real",
+      "date": "Sample board · August 14, 2026",
+      "boardId": "989809312"
+    }
+  },
+  "phone": {
+    "firstScreen": {
+      "h1": "Place five creatures in the right order",
+      "audience": "For daily puzzle players who want one shared spatial challenge that ends after five creatures.",
+      "action": "Try it with sample data",
+      "actionNote": "Opens a complete sample board.",
+      "facts": [
+        "Free to play.",
+        "Progress stays in this browser.",
+        "A new shared board appears each UTC day."
+      ],
+      "actionVisible": true,
+      "boardStartsInViewport": true,
+      "overflow": 0
+    },
+    "win": {
+      "score": "5/5",
+      "label": "Perfect (5)",
+      "items": 5,
+      "successes": 5
+    },
+    "banner": "Demo — sample board, nothing is saved\n    Reset demoStart for real",
+    "overflow": 0
+  },
+  "keyboard": {
+    "score": "5/5",
+    "label": "Perfect (5)",
+    "items": 5,
+    "successes": 5,
+    "controls": "1–5, Q, E, F, arrows, Space, Enter"
+  },
+  "isolation": {
+    "opfsAvailable": true,
+    "sampleDateKeyPresent": true,
+    "during": {
+      "storage": "[[\"real-progress-sentinel\",\"keep me\"],[\"shapeshift-set:daily:2026-08-14\",\"{\\\"date\\\":\\\"2026-08-14\\\",\\\"moves\\\":[{\\\"id\\\":\\\"mote\\\",\\\"mutation\\\":true}]}\"],[\"shapeshift-set:daily:2026-09-06\",\"{\\\"date\\\":\\\"2026-09-06\\\",\\\"moves\\\":[{\\\"id\\\":\\\"mote\\\",\\\"mutation\\\":true}]}\"],[\"shapeshift-set:daily:sentinel\",\"{\\\"moves\\\":[\\\"real\\\"]}\"]]",
+      "cookie": "real-progress-cookie=keep",
+      "databases": [],
+      "opfs": {
+        "supported": true,
+        "contents": "keep this real progress"
+      },
+      "reads": []
+    },
+    "after": {
+      "storage": "[[\"real-progress-sentinel\",\"keep me\"],[\"shapeshift-set:daily:2026-08-14\",\"{\\\"date\\\":\\\"2026-08-14\\\",\\\"moves\\\":[{\\\"id\\\":\\\"mote\\\",\\\"mutation\\\":true}]}\"],[\"shapeshift-set:daily:2026-09-06\",\"{\\\"date\\\":\\\"2026-09-06\\\",\\\"moves\\\":[{\\\"id\\\":\\\"mote\\\",\\\"mutation\\\":true}]}\"],[\"shapeshift-set:daily:sentinel\",\"{\\\"moves\\\":[\\\"real\\\"]}\"]]",
+      "cookie": "real-progress-cookie=keep",
+      "opfs": {
+        "supported": true,
+        "contents": "keep this real progress"
+      },
+      "reads": [
+        "shapeshift-set:daily:2026-09-06"
+      ]
+    }
+  },
+  "accessibility": {
+    "dialog": {
+      "focusInside": true,
+      "focusReturned": true
+    },
+    "reducedMotion": {
+      "animation": "1e-05s",
+      "transition": "1e-05s"
+    },
+    "text200": {
+      "overflow": 0,
+      "board": true,
+      "controls": true
+    }
+  },
+  "routes": {
+    "/": {
+      "status": 200,
+      "title": "Shapeshift Set — order five creatures daily",
+      "h1": 1,
+      "main": 1,
+      "footer": 1,
+      "axe": []
+    },
+    "/demo": {
+      "status": 200,
+      "title": "Demo — Shapeshift Set",
+      "h1": 1,
+      "main": 1,
+      "footer": 1,
+      "axe": []
+    },
+    "/privacy": {
+      "status": 200,
+      "title": "Privacy — Shapeshift Set",
+      "h1": 1,
+      "main": 1,
+      "footer": 1,
+      "axe": []
+    },
+    "/terms": {
+      "status": 200,
+      "title": "Terms — Shapeshift Set",
+      "h1": 1,
+      "main": 1,
+      "footer": 1,
+      "axe": []
+    },
+    "/missing-page-repair-6": {
+      "status": 404,
+      "title": "Page not found — Shapeshift Set",
+      "h1": 1,
+      "main": 1,
+      "footer": 1,
+      "axe": []
+    },
+    "links": [
+      {
+        "url": "https://shapeshift-set.sociobot.in/#main",
+        "status": 200
+      },
+      {
+        "url": "https://shapeshift-set.sociobot.in/",
+        "status": 200
+      },
+      {
+        "url": "https://shapeshift-set.sociobot.in/demo",
+        "status": 200
+      },
+      {
+        "url": "https://shapeshift-set.sociobot.in/#how",
+        "status": 200
+      },
+      {
+        "url": "https://shapeshift-set.sociobot.in/privacy",
+        "status": 200
+      },
+      {
+        "url": "https://shapeshift-set.sociobot.in/terms",
+        "status": 200
+      },
+      {
+        "url": "https://sociobot.in/",
+        "status": 200
+      }
+    ]
+  },
+  "privacy": {
+    "requests": [
+      {
+        "method": "GET",
+        "url": "https://shapeshift-set.sociobot.in/",
+        "body": null
+      },
+      {
+        "method": "GET",
+        "url": "https://shapeshift-set.sociobot.in/assets/index-BkbLntcz.js",
+        "body": null
+      },
+      {
+        "method": "GET",
+        "url": "https://shapeshift-set.sociobot.in/assets/index-CMGtcJXn.css",
+        "body": null
+      },
+      {
+        "method": "GET",
+        "url": "https://shapeshift-set.sociobot.in/assets/moon-garden-1200.webp",
+        "body": null
+      },
+      {
+        "method": "GET",
+        "url": "https://shapeshift-set.sociobot.in/assets/moon-garden-1200.webp",
+        "body": null
+      },
+      {
+        "method": "GET",
+        "url": "https://shapeshift-set.sociobot.in/assets/moon-garden-720.webp",
+        "body": null
+      }
+    ],
+    "consoleErrors": [],
+    "headers": {
+      "hsts": "max-age=10886400; includeSubDomains; preload",
+      "contentTypeOptions": "nosniff",
+      "referrerPolicy": "strict-origin-when-cross-origin",
+      "contentSecurityPolicy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'",
+      "permissionsPolicy": "camera=(), microphone=(), geolocation=()"
+    }
+  },
+  "recovery": {
+    "undo": {
+      "score": "0/5",
+      "items": 0,
+      "moteAvailable": true
+    },
+    "invalid": {
+      "noSelection": "No creature is selected. Choose one from the tray first.",
+      "openGround": "That tile has no habitat. Choose a dotted shape.",
+      "wrongShape": "That creature has a different shape. Choose its matching habitat.",
+      "wrongOrientation": "The blocks do not match yet. Rotate or flip the creature, then try again."
+    },
+    "rejectedWrite": "Progress could not be saved. This run will not survive reload. Keep this tab open to finish the board.",
+    "rejectedReloadScore": "0/5"
+  },
+  "offline": {
+    "title": "Demo — Shapeshift Set",
+    "h1": "Place five sample creatures in order",
+    "board": true
+  },
+  "performance": {
+    "target": 60,
+    "frames": 180,
+    "fps": 60.0020000666689,
+    "meanMs": 16.66611111111111,
+    "p95Ms": 16.700000000000273,
+    "fixedStepHz": 60.335344511483726,
+    "cpuThrottle": 4
+  }
+}

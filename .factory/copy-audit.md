@@ -1,8 +1,8 @@
 # Landing copy audit
 
-Re-audited September 5, 2026 for repair 5. Word counts treat numbers and
-hyphenated forms as one word. No listed sentence exceeds 22 words or contains a
-banned marketing word.
+Re-audited September 6, 2026 for repair 6. Player-facing copy is unchanged.
+Word counts treat numbers and hyphenated forms as one word. No listed sentence
+exceeds 22 words or contains a banned marketing word.
 
 ## First screen
 
