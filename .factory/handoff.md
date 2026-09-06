@@ -1,30 +1,29 @@
-# Shapeshift Set review 3 handoff
+# Shapeshift Set review 4 handoff
 
 **Verdict: PASS — zero findings and zero untested public claims.**
 
 - Implementation candidate: `08d18d967b84f9ba9b71549f4e069dff608e1824`
 - Test-only follow-up: `df4eff25078fcbdbecb04aafae3840edbfa5f872`
-- Documentation base reviewed: `144c2d068dd7f844a5d8e993be82e587727b1491`
-- Review: `.factory/review-3.md`
-- Evidence: `.factory/review-3-evidence/`
+- Documentation base reviewed: `fbb639a4f565a0d1832f8a598a9eb2e1e6e02410`
+- Review: `.factory/review-4.md`
+- Evidence: `.factory/review-4-evidence/`
 - Live URL: <https://shapeshift-set.sociobot.in>
 
 ## What was done
 
-No product code was changed. A fresh strict review covered the first desktop
-and phone screens, one-click sample, persistent demo label, isolated real-data
-sentinels, invalid placements, loss and perfect end states, reset, replay,
-undo, pointer, touch, keyboard, all routes, legal pages, deliberate 404,
-offline reload, reduced motion, 200% text, responsive targets, focus, Axe,
-Lighthouse, request privacy, live frame rate, and deployment parity.
+No product code was changed. The strict review covered fresh desktop and phone
+first screens, the isolated sample, real-data sentinels, invalid actions, a
+desktop loss, desktop and phone perfect runs, replay, reset, undo, keyboard,
+pointer, touch, route history, legal pages, the designed 404, offline reload,
+service-worker update state, reduced motion, 200% text, responsive targets,
+focus, Axe, Lighthouse, request privacy, frame timing, and deployment parity.
 
 All earlier review and verification findings, including the minor copy,
-metadata, focus, reflow, and target-size issues, were rechecked and remain
-closed. The full disposition table is in `.factory/review-3.md`.
+metadata, label, focus, reflow, clipping, and target-size issues, remain closed.
 
 ## How it was verified
 
-From a clean clone of `144c2d0`:
+From a clean clone of `fbb639a`:
 
 ```sh
 npm ci
@@ -37,37 +36,30 @@ Results:
 
 - `npm ci`: 22 packages, 0 vulnerabilities reported.
 - `npm test`: 32/32 passed.
-- `npm run lint`: passed.
-- `npm run build`: passed and produced `dist/`.
-- All 22 exact commands in `.factory/claims.json`: passed separately.
-- Claim integrity: 22 IDs, 22 unique tags, exactly one tag per ID.
+- Lint and build passed; `dist/` was produced.
+- All 22 exact claim commands passed separately.
+- Claim integrity: 22 unique IDs and 22 unique one-to-one test tags.
 - Build size: JS 24.59 kB raw / 9.03 kB gzip; CSS 16.86 kB raw /
   4.63 kB gzip.
+- Desktop: 1/5 loss and 5/5 Perfect, both with five result items.
+- Phone touch and keyboard-only runs each reached 5/5 Perfect.
+- Offline reload, activated current worker, route/legal/404 checks, and
+  real-data demo isolation passed.
+- Live Axe: zero violations across home, demo, privacy, terms, and 404.
+- Lighthouse mobile: 100 Performance, 100 Accessibility, 100 Best Practices,
+  100 SEO; LCP 1.2 s, TBT 70 ms, CLS 0.
+- 4× throttled phone sample: 60.00 fps and 60.33 Hz fixed step.
+- All 13 public product files byte-match the rebuilt candidate.
 
-Fresh live results:
-
-- Desktop loss: 1/5, Try again, five itemized results.
-- Desktop perfect run: 5/5, Perfect, five successful results.
-- Keyboard-only run: 5/5 Perfect.
-- Phone touch run: selected, turned, and placed a creature.
-- Offline `/demo` reload: passed in a fresh warmed context.
-- Live Axe: no violations on `/`, `/demo`, `/privacy`, `/terms`, or the 404.
-- Lighthouse mobile `/demo`: 100 Performance, 100 Accessibility,
-  100 Best Practices, 100 SEO; LCP 1.2 s, CLS 0, TBT 80 ms.
-- 4× throttled phone frame sample: 60.00 fps; fixed step 60.34 Hz.
-- Responsive matrix: no overflow or clipped controls; minimum cell 45.31 px.
-- Live requests: same-origin GET only, no console or page errors.
-- Candidate parity: all 13 served product files match the rebuilt candidate.
-
-Run the review browser evidence again with:
+Repeat the main live evidence with:
 
 ```sh
-node .factory/review-3-evidence/live-review.mjs
+node --preserve-symlinks-main .factory/review-4-evidence/live-review.mjs
 ```
 
 ## Known limit and next step
 
-The brief's aggregate 40% completion measure requires player analytics. This
-local-first game intentionally has no analytics, so the measure remains
-unavailable and is not claimed publicly. No product repair or redeployment is
-needed. The next factory step can accept the current live implementation.
+The brief's aggregate 40% completion measure requires analytics. The game
+intentionally sends none and does not claim that measure publicly. No product
+repair or deployment is needed. The next factory step can accept the current
+live implementation.

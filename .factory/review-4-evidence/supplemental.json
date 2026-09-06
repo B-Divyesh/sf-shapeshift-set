@@ -1,0 +1,47 @@
+{
+  "phone_complete_run": {
+    "viewport": "390x844",
+    "entry": "Try it with sample data",
+    "score": "5/5",
+    "result": "Perfect (5)",
+    "itemized_results": 5,
+    "successful_results": 5,
+    "horizontal_overflow_px": 0,
+    "replay_score": "0/5",
+    "replay_itemized_results": 0,
+    "screenshot": "phone-perfect-end.png"
+  },
+  "route_history": {
+    "privacy_title": "Privacy — Shapeshift Set",
+    "privacy_h1_focused": true,
+    "privacy_announcement": "Privacy page loaded.",
+    "back_h1_focused": true,
+    "scroll_before_navigation_px": 2001,
+    "scroll_after_back_px": 1905
+  },
+  "service_worker": {
+    "controller": true,
+    "active_state": "activated",
+    "waiting": false,
+    "installing": false,
+    "cache": "shapeshift-set-148a9dv",
+    "current_javascript_cached": true,
+    "current_css_cached": true
+  },
+  "lighthouse_mobile": {
+    "performance": 100,
+    "accessibility": 100,
+    "best_practices": 100,
+    "seo": 100,
+    "first_contentful_paint_seconds": 0.9,
+    "largest_contentful_paint_seconds": 1.2,
+    "total_blocking_time_ms": 70,
+    "cumulative_layout_shift": 0,
+    "total_transfer_kib": 37
+  },
+  "candidate_parity": {
+    "public_files_checked": 13,
+    "byte_matches": 13,
+    "mismatches": 0
+  }
+}
