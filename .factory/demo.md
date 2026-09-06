@@ -29,6 +29,10 @@ board.
 Use “Reset demo” in the banner or game controls. Reset restores the original
 piece orientations, empty board, zero score, and zero undo count.
 
-The claims suite starts from fresh browser contexts and uses only `/demo` plus
-the bundled sample. Run all checks with `npm test`, or a single claim with the
-command recorded in `.factory/claims.json`.
+The isolation claim seeds valid sample-date and current-day runs, a cookie, and
+an OPFS file. It records real-progress reads while the sample is active, checks
+that localStorage, cookies, IndexedDB, and OPFS are unchanged after reset, then
+confirms that real progress is read only after “Start for real.” The claims
+suite starts from fresh browser contexts and uses only `/demo` plus the bundled
+sample. Run all checks with `npm test`, or a single claim with the command
+recorded in `.factory/claims.json`.

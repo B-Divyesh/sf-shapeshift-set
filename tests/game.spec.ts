@@ -9,6 +9,7 @@ import {
   isOriented,
   placeSelected,
   rotatePiece,
+  utcDate,
   type GameState,
   type PieceId,
 } from '../src/core';
@@ -179,28 +180,116 @@ test('@claim:local-progress real progress survives a reload', async ({ page }) =
 });
 
 test('@claim:demo-isolation demo uses memory only and never reads or changes real progress', async ({ page }) => {
+  const today = utcDate();
+  const sampleRun = placeSelected(
+    readyPiece(createGame(SAMPLE_DATE), perfectOrder[0]),
+    perfectOrder[0],
+  ).state;
+  const todayFirstPiece = dailyOrder(today)[0];
+  const todayRun = placeSelected(
+    readyPiece(createGame(today), todayFirstPiece),
+    todayFirstPiece,
+  ).state;
+
   await page.goto('/');
-  const before = await page.evaluate(() => {
+  const before = await page.evaluate(async ({ sampleDate, sampleState, todayDate, todayState }) => {
     localStorage.clear();
+    localStorage.setItem(`shapeshift-set:daily:${sampleDate}`, JSON.stringify(sampleState));
+    localStorage.setItem(`shapeshift-set:daily:${todayDate}`, JSON.stringify(todayState));
     localStorage.setItem('shapeshift-set:daily:sentinel', JSON.stringify({ moves: ['real'] }));
     localStorage.setItem('real-progress-sentinel', 'keep me');
     document.cookie = 'real-progress-cookie=keep; path=/';
-    return { storage: JSON.stringify(Object.entries(localStorage).sort()), cookie: document.cookie };
-  });
+
+    const storageManager = navigator.storage as StorageManager & {
+      getDirectory?: () => Promise<FileSystemDirectoryHandle>;
+    };
+    let opfs: { supported: boolean; contents: string | null } = { supported: false, contents: null };
+    if (storageManager.getDirectory) {
+      const root = await storageManager.getDirectory();
+      const handle = await root.getFileHandle('real-progress-sentinel.txt', { create: true });
+      const writable = await handle.createWritable();
+      await writable.write('keep this real progress');
+      await writable.close();
+      opfs = { supported: true, contents: await (await handle.getFile()).text() };
+    }
+
+    return {
+      storage: JSON.stringify(Object.entries(localStorage).sort()),
+      cookie: document.cookie,
+      opfs,
+    };
+  }, { sampleDate: SAMPLE_DATE, sampleState: sampleRun, todayDate: today, todayState: todayRun });
+
+  await page.addInitScript(({ prefix }) => {
+    const reads: string[] = [];
+    Object.defineProperty(window, '__shapeshiftRealProgressReads', {
+      configurable: true,
+      value: reads,
+    });
+    const originalGetItem = Storage.prototype.getItem;
+    Storage.prototype.getItem = function getItem(key: string): string | null {
+      if (this === window.localStorage && key.startsWith(prefix)) reads.push(key);
+      return originalGetItem.call(this, key);
+    };
+  }, { prefix: 'shapeshift-set:daily:' });
+
   await page.goto('/demo');
+  await expect(page.locator('.score-box strong')).toContainText('0/5');
+  expect(await page.evaluate(() =>
+    (window as Window & { __shapeshiftRealProgressReads: string[] }).__shapeshiftRealProgressReads)).toEqual([]);
   await placePiece(page, perfectOrder[0]);
   await page.getByRole('button', { name: 'Reset demo' }).first().click();
-  const during = await page.evaluate(async () => ({
-    storage: JSON.stringify(Object.entries(localStorage).sort()),
-    cookie: document.cookie,
-    databases: 'databases' in indexedDB ? await indexedDB.databases() : [],
-  }));
+  await expect(page.locator('.score-box strong')).toContainText('0/5');
+  await expect(page.locator('.score-trail li')).toHaveCount(0);
+  const during = await page.evaluate(async () => {
+    const storageManager = navigator.storage as StorageManager & {
+      getDirectory?: () => Promise<FileSystemDirectoryHandle>;
+    };
+    let opfs: { supported: boolean; contents: string | null } = { supported: false, contents: null };
+    if (storageManager.getDirectory) {
+      const root = await storageManager.getDirectory();
+      const handle = await root.getFileHandle('real-progress-sentinel.txt');
+      opfs = { supported: true, contents: await (await handle.getFile()).text() };
+    }
+    return {
+      storage: JSON.stringify(Object.entries(localStorage).sort()),
+      cookie: document.cookie,
+      databases: 'databases' in indexedDB ? await indexedDB.databases() : [],
+      opfs,
+      realProgressReads: (window as Window & { __shapeshiftRealProgressReads: string[] }).__shapeshiftRealProgressReads,
+    };
+  });
   expect(during.storage).toBe(before.storage);
   expect(during.cookie).toBe(before.cookie);
   expect(during.databases).toEqual([]);
+  expect(during.opfs).toEqual(before.opfs);
+  expect(during.realProgressReads).toEqual([]);
+
   await page.getByRole('link', { name: 'Start for real' }).click();
-  await expect(page.locator('.score-box strong')).toContainText('0/5');
-  expect(await page.evaluate(() => JSON.stringify(Object.entries(localStorage).sort()))).toBe(before.storage);
+  await expect(page.getByRole('complementary', { name: 'Demo mode' })).toHaveCount(0);
+  await expect(page.locator('.score-box strong')).toContainText('1/5');
+  await expect(page.locator(`[data-select-piece="${todayFirstPiece}"]`)).toBeDisabled();
+  const after = await page.evaluate(async () => {
+    const storageManager = navigator.storage as StorageManager & {
+      getDirectory?: () => Promise<FileSystemDirectoryHandle>;
+    };
+    let opfs: { supported: boolean; contents: string | null } = { supported: false, contents: null };
+    if (storageManager.getDirectory) {
+      const root = await storageManager.getDirectory();
+      const handle = await root.getFileHandle('real-progress-sentinel.txt');
+      opfs = { supported: true, contents: await (await handle.getFile()).text() };
+    }
+    return {
+      storage: JSON.stringify(Object.entries(localStorage).sort()),
+      cookie: document.cookie,
+      opfs,
+      realProgressReads: (window as Window & { __shapeshiftRealProgressReads: string[] }).__shapeshiftRealProgressReads,
+    };
+  });
+  expect(after.storage).toBe(before.storage);
+  expect(after.cookie).toBe(before.cookie);
+  expect(after.opfs).toEqual(before.opfs);
+  expect(after.realProgressReads).toEqual([`shapeshift-set:daily:${today}`]);
 });
 
 test('@claim:offline-reload the demo reopens offline after its first visit', async ({ browser }) => {

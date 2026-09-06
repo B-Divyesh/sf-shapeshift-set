@@ -39,7 +39,7 @@
     "claim": "Demo uses memory only and never reads or changes real progress.",
     "where": "demo banner, privacy",
     "test": "npm test -- --grep @claim:demo-isolation",
-    "sandbox": "seed real local storage and a cookie; play and reset /demo; inspect storage, cookies, IndexedDB, then return to real play"
+    "sandbox": "seed valid sample-date and current-day runs, a cookie, and an OPFS file; record real-progress reads; play and reset /demo; inspect localStorage, cookies, IndexedDB, and OPFS; then return to the separately stored current-day run"
   },
   {
     "id": "offline-reload",
