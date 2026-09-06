@@ -5,6 +5,7 @@
 - Live URL: <https://shapeshift-set.sociobot.in>
 - Runtime implementation SHA: `08d18d967b84f9ba9b71549f4e069dff608e1824`
 - Repair and verification SHA: `8a861ded577d60d01def314aa6f584b9f67203d4`
+- Documentation and evidence base: `628045b3a3ac98629155e80cfe67e126fef7c412`
 - Review base: `884c51507e3ee0907dcca7a5ba34acf20abd44e0`
 - Evidence: `.factory/repair-6-evidence/`
 - Verified: September 6, 2026 UTC
